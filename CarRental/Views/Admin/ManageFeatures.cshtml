@@ -1,0 +1,157 @@
+﻿@model IEnumerable<FeatureWithCountVM>
+@{
+    Layout = "_AdminDashboard";
+    ViewData["Title"] = "Manage Features";
+}
+@section styles {
+    <link rel="stylesheet" href="~/style/manageFeatures.css">
+    <style>
+        /* Alert container */
+        .custom-alert {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 14px 18px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+            font-size: 14px;
+            font-weight: 500;
+            position: relative;
+            animation: fadeIn 0.3s ease-in-out;
+            transition: opacity 0.3s ease, transform 0.3s ease;
+        }
+
+        /* Close button */
+        .alert-close {
+            margin-left: auto;
+            background: none;
+            border: none;
+            font-size: 18px;
+            cursor: pointer;
+            color: #166534;
+            opacity: 0.6;
+            transition: 0.2s;
+        }
+
+            .alert-close:hover {
+                opacity: 1;
+            }
+
+        /* Hide animation */
+        .custom-alert.hide {
+            opacity: 0;
+            transform: translateY(-5px);
+        }
+        /* ================= Success Alert ================= */
+        .custom-alert {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 14px 18px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+            font-size: 14px;
+            font-weight: 500;
+            animation: fadeIn 0.3s ease-in-out;
+        }
+
+        /* Success Style */
+        .success-alert {
+            background-color: #ecfdf5;
+            color: #166534;
+            border: 1px solid #bbf7d0;
+        }
+
+        /* Icon circle */
+        .alert-icon {
+            background: #22c55e;
+            color: white;
+            width: 22px;
+            height: 22px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 13px;
+        }
+        .add-btn{
+            text-decoration:none;
+        }
+
+    </style>
+}
+    <main class="dashboard-content">
+        <header class="content-header">
+            <h1>Manage Features</h1>
+            <p>Add and manage car features like Leather Seats, GPS, Wireless Charging, and more</p>
+        </header>
+    @if (TempData["SuccessMessage"] != null)
+    {
+        <div class="custom-alert success-alert" id="successAlert">
+            <span class="alert-icon">✓</span>
+            <span>@TempData["SuccessMessage"]</span>
+            <button class="alert-close" onclick="closeAlert()">X</button>
+        </div>
+    }
+        <div class="actions-bar-top">
+            <div class="search-box">
+                <input type="text" id="searchFeatures" placeholder="Search features...">
+            </div>
+        <a asp-action="AddFeature"
+                class="add-btn">+ Add Feature</a>
+        </div>
+    <div class="features-grid">
+        @foreach (var feature in Model)
+        {
+            <div class="feature-card">
+                <h3 class="featureName">@feature.FeatureName</h3>
+                <p class="feature-usage">Used in @feature.CarCount cars</p>
+                <div class="actions-cell">
+                    <a asp-controller="Admin" asp-action="EditFeature" asp-route-id="@feature.FeatureId"
+                       title="Edit">
+                        <img src="~/imgs/edit-eye.svg">
+                    </a>
+                    <form asp-controller="Admin"
+                          asp-action="DeleteFeature"
+                          asp-route-id="@feature.FeatureId"
+                          method="post"
+                          style="display:inline;">
+
+                        <button type="submit" style="background:none;border:none;padding:0;"
+                                onclick="return confirm('Are you sure you want to delete this category?')">
+                            <img src="~/imgs/trash.svg" title="Delete" />
+                        </button>
+                    </form>
+                </div>
+            </div>
+        }
+        </div>
+    </main>
+@section Scripts {
+    <script>
+        function closeAlert(){
+            const alert = document.getElementById("successAlert");
+            if(alert){
+                alert.classList.add("hide");
+                setTimeout(()=>alert.remove(),300)
+            }
+        }
+        // Auto close after 4 seconds
+        setTimeout(()=>{
+            closeAlert();
+        },4000)
+    </script>
+    <script>
+        const searchInput = document.getElementById("searchFeatures");
+        searchInput.addEventListener("keyup",search);
+        function search(){
+            const searchText = searchInput.value.toLowerCase().trim();
+            const rows = document.querySelectorAll(".features-grid .feature-card")
+            rows.forEach(row=>{
+                const featureName = row.querySelector(".featureName")?.innerText.toLowerCase() || "";
+                const matchSearch = featureName.includes(searchText);
+                row.style.display = matchSearch ? "":"none";
+            })
+        }
+    </script>
+}

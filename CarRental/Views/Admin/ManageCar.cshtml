@@ -1,0 +1,139 @@
+﻿@model IEnumerable<CarRental.Models.Car>
+
+@{
+    Layout = "_AdminDashboard";
+    ViewData["Title"] = "Manage Cars";
+}
+
+@section styles {
+    <link rel="stylesheet" href="~/style/manageCar.css">
+}
+
+<main class="dashboard-content">
+    <header class="content-header">
+        <h1>Manage Cars</h1>
+        <p>View all listed cars, update their details, or remove them from the booking platform</p>
+    </header>
+
+    @if (TempData["SuccessMessage"] != null)
+    {
+        <div class="custom-alert success-alert" id="successAlert">
+            <span class="alert-icon">✓</span>
+            <span>@TempData["SuccessMessage"]</span>
+            <button class="alert-close" onclick="closeAlert()">X</button>
+        </div>
+    }
+
+    <div class="manage-cars-card">
+        <div class="actions-bar">
+            <div class="search-box">
+                <input type="text" id="searchCars" placeholder="Search cars by brand, model...">
+            </div>
+            <a asp-controller="Admin" asp-action="AddCar" class="add-btn">+ Add New Car</a>
+        </div>
+
+        <table class="cars-table">
+            <thead>
+                <tr>
+                    <th>Car</th>
+                    <th>Category</th>
+                    <th>Price/Day</th>
+                    <th>Location</th>
+                    <th>Status</th>
+                    <th>Approval</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                @if (!Model.Any())
+                {
+                    <tr>
+                        <td colspan="7" class="empty-table">
+                            <div class="empty-state">
+                                <h3>No cars found</h3>
+                                <p>Get started by adding your first car</p>
+                                <a asp-controller="Admin" asp-action="AddCar" class="add-btn">+ Add New Car</a>
+                            </div>
+                        </td>
+                    </tr>
+                }
+                else
+                {
+                    @foreach (var car in Model)
+                    {
+                        <tr>
+                            <td class="car-cell">
+                                <img src="@(car.ImageUrl ?? "/imgs/default-car.jpg")" alt="@car.Brand @car.Model">
+                                <div class="car-info">
+                                    <strong>@car.Brand @car.Model</strong>
+                                    <span>@car.Year • @car.Transmission • @car.FuelType</span>
+                                </div>
+                            </td>
+                            <td>@car.Category?.CategoryName</td>
+                            <td>$@car.DailyPrice.ToString("F2")</td>
+                            <td>@car.Location?.City</td>
+                            <td>
+                                <span class="status-pill @(car.IsAvailable ? "available" : "unavailable")">
+                                    @(car.IsAvailable ? "Available" : "NotAvailable")
+                                </span>
+                            </td>
+                            <td>
+                                <span class="status-pill @(car.IsApproved ? "approved" : "pending")">
+                                    @(car.IsApproved ? "Approved" : "Pending")
+                                </span>
+                            </td>
+                            <td class="actions-cell">
+                                <a asp-controller="Admin" asp-action="EditCar" asp-route-id="@car.CarId"
+                                   class="btn-edit" title="Edit">
+                                    <img class="edit" src="~/imgs/edit-eye.svg">
+                                </a>
+                                <a class="btn-delete"
+                                   asp-action="DeleteCar" asp-controller="Admin" asp-route-id="@car.CarId"
+                                    onclick="alert("Are You Sure To Delete")" title="Delete">
+                                    <img class="del" src="~/imgs/trash.svg">
+                                </a>
+                            </td>
+                        </tr>
+                    }
+                }
+            </tbody>
+        </table>
+    </div>
+</main>
+@section Scripts {
+    <script>
+        function closeAlert(){
+            const alert = document.getElementById("successAlert");
+            if(alert){
+                alert.classList.add("hide");
+                setTimeout(()=>alert.remove(),300)
+            }
+        }
+        // Auto close after 4 seconds
+        setTimeout(()=>{
+            closeAlert();
+        },4000)
+    </script>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script>
+        $('#searchCars').on('keyup', function () {
+
+            const searchText = $(this).val().toLowerCase().trim();
+
+                    $('.cars-table tbody tr').each(function () {
+
+                const brandModel = $(this).find('.car-info strong').text().toLowerCase();
+                const details = $(this).find('.car-info span').text().toLowerCase();
+                const category = $(this).find('td:eq(1)').text().toLowerCase();
+                const price = $(this).find('td:eq(2)').text().toLowerCase();
+                const location = $(this).find('td:eq(3)').text().toLowerCase();
+                const status = $(this).find('td:eq(4)').text().toLowerCase();
+
+                const rowText = brandModel + details + category + price + location + status;
+
+                $(this).toggle(rowText.includes(searchText));
+            });
+        });
+    </script>
+
+}

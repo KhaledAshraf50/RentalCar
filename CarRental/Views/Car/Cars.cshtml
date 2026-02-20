@@ -1,0 +1,253 @@
+﻿@model CarFilterViewModel
+@{
+    Layout = "_Layout";
+    ViewData["Title"] = "Available Cars";
+}
+
+@section styles{
+    <link rel="stylesheet" href="~/style/main.css">
+    <link rel="stylesheet" href="~/style/cars.css">
+    <link rel="stylesheet"
+          href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+}
+
+<style>
+    .carCard {
+        text-decoration: none;
+        position: relative;
+        display:block;
+    }
+
+    .favorite-form {
+        position: absolute;
+        top: 12px;
+        right: 12px;
+        z-index: 10;
+    }
+
+    .favorite-btn {
+        background: white;
+        border: none;
+        width: 40px;
+        height: 40px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+        transition: 0.3s;
+    }
+
+    .favorite-btn:hover {
+        transform: scale(1.1);
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+    }
+        .favorite-btn svg {
+            width: 20px;
+            height: 20px;
+        }
+
+        .favorite-btn.active svg {
+            fill: #ef4444;
+        }
+
+        .favorite-btn:not(.active) svg {
+            fill: none;
+            stroke: #64748b;
+            stroke-width: 2;
+        }
+
+    .Filter {
+        appearance: none;
+        -webkit-appearance: none;
+        -moz-appearance: none;
+        border: 1px solid #e5e7eb;
+        padding: 14px 45px 14px 20px;
+        background-color: #ffffff;
+        border-radius: 14px;
+        outline: none;
+        font-size: 15px;
+        font-weight: 500;
+        color: #374151;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+        min-width: 200px;
+        background-image: url("data:image/svg+xml;utf8,<svg fill='%236b7280' height='20' viewBox='0 0 20 20' width='20' xmlns='http://www.w3.org/2000/svg'><path d='M5.23 7.21a.75.75 0 011.06.02L10 10.94l3.71-3.71a.75.75 0 111.06 1.06l-4.24 4.24a.75.75 0 01-1.06 0L5.21 8.29a.75.75 0 01.02-1.08z'/></svg>");
+        background-repeat: no-repeat;
+        background-position: right 15px center;
+        background-size: 18px;
+        width: 100%;
+    }
+        /* Hover */
+        .Filter:hover {
+            border-color: #2563eb;
+            box-shadow: 0 6px 18px rgba(37, 99, 235, 0.15);
+        }
+        /* Focus */
+        .Filter:focus {
+            border-color: #2563eb;
+            box-shadow: 0 0 0 4px rgba(37, 99, 235, 0.15);
+        }
+    /* Responsive */
+    @@media (max-width: 767px) {
+        .filter-wrapper
+
+    {
+        flex-direction: column;
+    }
+
+    .Filter {
+        width: 100%;
+    }
+
+    }
+</style>
+
+<!-- Hero Section -->
+<section class="cars-hero">
+    <h1>Available Cars</h1>
+    <p>Browse our selection of premium vehicles available for your next adventure</p>
+
+    <!-- Filter Form -->
+    <form method="get" asp-action="Index" class="cars-search">
+
+        <input type="text"
+               name="search"
+               value="@Model.Search"
+               placeholder="Search by make, model, or features" />
+
+        <div class="filter-section">
+
+            <select name="categoryId" class="Filter">
+                <option value="">All Categories</option>
+                @foreach (var category in Model.Categories)
+                {
+                    <option value="@category.Value"
+                            selected="@(Model.CategoryId?.ToString() == category.Value)">
+                        @category.Text
+                    </option>
+                }
+            </select>
+
+            <select name="locationId" class="Filter">
+                <option value="">All Locations</option>
+                @foreach (var location in Model.Locations)
+                {
+                    <option value="@location.Value"
+                            selected="@(Model.LocationId?.ToString() == location.Value)">
+                        @location.Text
+                    </option>
+                }
+            </select>
+
+            <input type="number" name="minprice" value="@Model.MinPrice" placeholder="Min Price" />
+            <input type="number" name="maxprice" value="@Model.MaxPrice" placeholder="Max Price" />
+
+            <button type="submit"
+           style="padding:10px 20px; color:white;background-color:#0558FE;border-radius:16px;
+                outline:none;border:1px solid white">
+                Filter
+            </button>
+        </div>
+    </form>
+</section>
+<!-- Cars Listing -->
+<section class="cars-listing">
+    <div class="container">
+
+        <p class="results-count">Showing @Model.Cars.Count() Cars</p>
+
+        @if (!Model.Cars.Any())
+        {
+            <div class="empty-state">
+                <h3>No cars found</h3>
+                <p>Try adjusting your search or filter criteria</p>
+                <a asp-action="Index" class="browse-cars-btn">Clear Filters</a>
+            </div>
+        }
+        else
+        {
+            <div class="cars-grid">
+                @foreach (var car in Model.Cars)
+                {
+                    <div class="car-card-wrapper">
+                        <!-- Car Card -->
+                        <a asp-controller="Car"
+                           asp-action="CarDetails"
+                           asp-route-id="@car.CarId"
+                           class="carCard">
+
+                            <div class="car-card">
+
+                                <div class="car-image">
+                                    <span class="status">
+                                        @(car.IsAvailable ? "Available Now" : "Booked")
+                                    </span>
+                                    <form asp-controller="Favorite"
+                                          asp-action="Toggle"
+                                          method="post"
+                                          class="position-absolute top-0 end-0 m-2">
+
+                                        <input type="hidden" name="carId" value="@car.CarId" />
+
+                                        @{
+                                            var isFavorite = Model.FavoriteIds.Contains(car.CarId);
+                                        }
+                                        <form asp-controller="Favorite"
+                                              asp-action="Toggle"
+                                              method="post"
+                                              class="position-absolute top-0 end-0 m-2">
+
+                                            @Html.AntiForgeryToken()
+                                            <input type="hidden" name="carId" value="@car.CarId" />
+
+                                            <button type="submit"
+                                                    class="favorite-btn @(isFavorite ? "active" : "")">
+
+                                                <svg viewBox="0 0 24 24">
+                                                    <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5
+                                                     2 5.42 4.42 3 7.5 3
+                                                     c1.74 0 3.41.81 4.5 2.09
+                                                     C13.09 3.81 14.76 3 16.5 3
+                                                     19.58 3 22 5.42 22 8.5
+                                                     c0 3.78-3.4 6.86-8.55 11.54L12 21.35z" />
+                                                </svg>
+
+                                            </button>
+                                        </form>
+
+                                    </form>
+                                    <img src="@(car.ImageUrl ?? "/imgs/default-car.jpg")"
+                                         alt="@car.Brand @car.Model" />
+
+                                    <span class="price">
+                                        $@car.DailyPrice / day
+                                    </span>
+                                </div>
+
+                                <div class="car-info">
+                                    <h3>@car.Brand @car.Model</h3>
+                                    <p>@car.Category?.CategoryName · @car.Year</p>
+
+                                    <ul class="car-features">
+                                        <li>@car.SeatingCapacity Seats</li>
+                                        <li>@car.FuelType</li>
+                                        <li>@car.Transmission</li>
+                                        <li>@car.Location?.City</li>
+                                    </ul>
+                                </div>
+
+                            </div>
+                        </a>
+
+                    </div>
+                }
+            </div>
+        }
+    </div>
+</section>
+@section Scripts{
+    <script src="~/js/main.js"></script>
+}

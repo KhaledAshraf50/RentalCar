@@ -1,0 +1,113 @@
+﻿@model IEnumerable<CarRental.Models.Favorite>
+
+@{
+    Layout = "_Layout"; 
+    ViewData["Title"] = "My Favorites";
+}
+
+@section styles {
+    <link rel="stylesheet" href="~/style/main.css">
+    <link rel="stylesheet" href="~/style/cars.css">
+    <link rel="stylesheet"
+          href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+          <style>
+              a{
+                  text-decoration:none;
+              }
+          </style>
+}
+
+<!-- Hero Section -->
+<section class="cars-hero">
+    <h1>My Favorite Cars</h1>
+    <p>Cars you've saved for later</p>
+</section>
+
+<!-- Cars Listing -->
+<section class="cars-listing">
+    <div class="container">
+
+        @if (!Model.Any())
+        {
+            <div class="empty-state">
+                <h3>No favorites yet</h3>
+                <p>Start adding cars to your favorites</p>
+                <a asp-controller="Car" asp-action="Index" class="browse-cars-btn">
+                    Browse Cars
+                </a>
+            </div>
+        }
+        else
+        {
+            <p class="results-count">Showing @Model.Count() Cars</p>
+
+            <div class="cars-grid">
+
+                @foreach (var favorite in Model)
+                {
+                    var car = favorite.Car;
+
+                    <div class="car-card-wrapper">
+
+                        <a asp-controller="Car"
+                           asp-action="CarDetails"
+                           asp-route-id="@car.CarId"
+                           class="carCard">
+
+                            <div class="car-card">
+
+                                <div class="car-image">
+
+                                    <span class="status">
+                                        @(car.IsAvailable ? "Available Now" : "Booked")
+                                    </span>
+
+                                    <!-- زرار القلب -->
+                                    <form asp-controller="Favorite"
+                                          asp-action="Toggle"
+                                          method="post"
+                                          class="position-absolute top-0 end-0 m-2">
+
+                                        @Html.AntiForgeryToken()
+                                        <input type="hidden" name="carId" value="@car.CarId" />
+
+                                        <button type="submit"
+                                                class="btn btn-light rounded-circle shadow-sm">
+
+                                            <i class="fa fa-heart text-danger"></i>
+
+                                        </button>
+                                    </form>
+
+                                    <img src="@(car.ImageUrl ?? "/imgs/default-car.jpg")"
+                                         alt="@car.Brand @car.Model" />
+
+                                    <span class="price">
+                                        $@car.DailyPrice / day
+                                    </span>
+
+                                </div>
+
+                                <div class="car-info">
+                                    <h3>@car.Brand @car.Model</h3>
+                                    <p>@car.Category?.CategoryName · @car.Year</p>
+
+                                    <ul class="car-features">
+                                        <li>@car.SeatingCapacity Seats</li>
+                                        <li>@car.FuelType</li>
+                                        <li>@car.Transmission</li>
+                                        <li>@car.Location?.City</li>
+                                    </ul>
+                                </div>
+
+                            </div>
+                        </a>
+
+                    </div>
+                }
+
+            </div>
+        }
+
+    </div>
+</section>

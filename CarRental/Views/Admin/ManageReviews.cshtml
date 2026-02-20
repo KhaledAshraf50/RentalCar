@@ -1,0 +1,137 @@
+﻿@model IEnumerable<ReviewAdminVM>
+@{
+    Layout = "_AdminDashboard";
+    ViewData["Title"] = "Manage Reviews";
+}
+@section styles {
+    <link rel="stylesheet" href="~/style/manageReviews.css">
+    <style>
+        .filter-bar {
+            display: flex;
+            flex-direction:row;
+            gap: 15px;
+            margin-bottom: 20px;
+            align-items: center;
+        }
+
+        .custom-select {
+            display:block;
+            padding: 8px 14px;
+            border-radius: 8px;
+            border: 1px solid #ccc;
+            font-size: 14px;
+            cursor: pointer;
+            background-color: #fff;
+            transition: 0.3s ease;
+        }
+
+            .custom-select:hover {
+                border-color: #007bff;
+            }
+
+        .search-input {
+            padding: 8px 14px;
+            border-radius: 8px;
+            border: 1px solid #ccc;
+            width: 280px;
+            font-size: 14px;
+        }
+
+            .search-input:focus {
+                border-color: #007bff;
+                outline: none;
+            }
+
+        .btn-search {
+            display:block;
+            padding: 8px 18px;
+            border-radius: 8px;
+            border: none;
+            background-color: #007bff;
+            color: white;
+            cursor: pointer;
+            transition: 0.3s;
+        }
+
+            .btn-search:hover {
+                background-color: #0056b3;
+            }
+
+    </style>
+}
+
+    <main class="dashboard-content">
+        <header class="content-header">
+            <h1>Manage Reviews</h1>
+            <p>Review and approve customer feedback before it appears on the platform</p>
+        </header>
+        <div class="actions-bar-top">
+        <form asp-action="ManageReviews" method="get" class="filters-bar">
+            <div class="dropdown-wrapper">
+                <div class="search-wrapper">
+                    <input type="text" name="search" value="@ViewBag.CurrentSearch"
+                           placeholder="Search reviews..." class="search-input">
+                </div>
+            <select name="filter" class="custom-select">
+                <option value="">All Reviews</option>
+                <option value="pending" selected="@(ViewBag.CurrentFilter == "pending")">
+                    Pending
+                </option>
+                <option value="approved" selected="@(ViewBag.CurrentFilter == "approved")">
+                    Approved
+                </option>
+            </select>
+            </div>
+            
+            <button type="submit" class="btn-search">Search</button>
+        </form>
+        </div>
+        <div class="reviews-container">
+        @foreach(var review in Model)
+        {
+            <div class="review-card">
+                <div class="review-header">
+                    <div class="reviewer-info">
+                        <img src="@(review.ImageUrl)" alt="User">
+                        <div>
+                            <h4>@review.UserName</h4>
+                            <p class="review-meta">
+                                @review.CarName - @review.ReviewDate.ToShortDateString()
+                            </p>
+                        </div>
+                    </div>
+                    <div class="review-actions">
+                        @if (!review.IsApproved)
+                        {
+                            <span class="status-badge pending">Pending</span>
+                            <form asp-action="ApproveReview" method="post" style="display:inline;">
+                                <input type="hidden" name="id" value="@review.ReviewId" />
+                                <button type="submit" class="btn-approve">
+                                    Approve
+                                </button>
+                            </form>
+                            <form asp-action="RejectReview" method="post" style="display:inline;">
+                                <input type="hidden" name="id" value="@review.ReviewId" />
+                                <button type="submit" class="btn-reject">
+                                    Reject
+                                </button>
+                            </form>
+                        }
+                        else
+                        {
+                            <span class="status-badge approved">Approved</span>
+                        }
+                    </div>
+                </div>
+                <div class="review-rating">
+                    <span class="stars">&#9733;&#9733;&#9733;&#9733;&#9733;</span>
+                    <span class="rating-number">@review.Rating</span>
+                </div>
+                <p class="review-comment">
+                    @review.Comment
+                </p>
+            </div>
+
+        }
+        </div>
+    </main>

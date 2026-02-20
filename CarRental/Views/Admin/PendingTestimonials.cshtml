@@ -1,0 +1,179 @@
+﻿@{
+    Layout = "_AdminDashboard";
+}
+@model List<Testimonial>
+<style>
+    .testimonial-wrapper {
+        padding: 40px;
+    }
+
+    .section-title {
+        font-size: 26px;
+        font-weight: 600;
+        margin-bottom: 30px;
+        color: #1e293b;
+    }
+
+    .testimonial-grid {
+        display: grid;
+         grid-template-columns: repeat(auto-fill, minmax(350px, 1fr)); 
+        gap: 25px;
+    }
+
+    .testimonial-card {
+        background: #ffffff;
+        border-radius: 16px;
+        padding: 25px;
+        box-shadow: 0 8px 25px rgba(0, 0, 0, 0.06);
+        transition: 0.3s ease;
+    }
+
+        .testimonial-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 12px 30px rgba(0, 0, 0, 0.1);
+        }
+
+    .user-info {
+        display: flex;
+        align-items: center;
+        margin-bottom: 15px;
+    }
+
+        .user-info img {
+            width: 55px;
+            height: 55px;
+            border-radius: 50%;
+            margin-right: 15px;
+            object-fit: cover;
+        }
+
+        .user-info h4 {
+            margin: 0;
+            font-size: 16px;
+            color: #0f172a;
+        }
+
+        .user-info span {
+            font-size: 13px;
+            color: #64748b;
+        }
+
+    .stars {
+        color: #00f;
+        margin-bottom: 10px;
+        font-size: 18px;
+    }
+
+    .comment {
+        font-size: 14px;
+        color: #334155;
+        margin-bottom: 20px;
+        line-height: 1.6;
+    }
+
+    .approve-btn {
+        background: #10b981;
+        color: white;
+        border: none;
+        padding: 8px 18px;
+        border-radius: 25px;
+        cursor: pointer;
+        transition: 0.3s;
+    }
+
+    .reject-btn{
+        background-color:#f55;
+        color: white;
+        border: none;
+        padding: 8px 18px;
+        border-radius: 25px;
+        cursor: pointer;
+        transition: 0.3s;
+        margin-top:10px;
+    }
+
+        .reject-btn:hover{
+            background: #f44;
+            color: white;
+            border: none;
+            padding: 8px 18px;
+            border-radius: 25px;
+            cursor: pointer;
+            transition: 0.3s;
+        }
+
+        .approve-btn:hover {
+        background: #059669;
+        color: white;
+        border: none;
+        padding: 8px 18px;
+        border-radius: 25px;
+        cursor: pointer;
+        transition: 0.3s;
+        }
+
+    .empty-box {
+        background: #f1f5f9;
+        padding: 40px;
+        border-radius: 14px;
+        text-align: center;
+        color: #475569;
+    }
+
+</style>
+
+<div class="testimonial-wrapper">
+    <h2 class="section-title">Pending Testimonials</h2>
+
+    @if (!Model.Any())
+    {
+        <div class="empty-box">
+            <h4>No Pending Testimonials</h4>
+            <p>Everything is reviewed. You're doing great</p>
+        </div>
+    }
+    else
+    {
+        <div class="testimonial-grid">
+            @foreach (var item in Model)
+            {
+                <div class="testimonial-card">
+
+                    <div class="user-info">
+                        <img
+                            src="@(item.User.ProfileImage ?? "/imgs/profile_img.svg")" />
+                        <div>
+                            <h4>@item.User.FullName</h4>
+                            <span>@item.CreatedAt.ToShortDateString()</span>
+                        </div>
+                    </div>
+
+                    <div class="stars">
+                        @for (int i = 0; i < item.Rating; i++)
+                        {
+                            <span>★</span>
+                        }
+                    </div>
+
+                    <p class="comment">@item.Comment</p>
+
+                    <form asp-action="ApproveTestimonial"
+                          asp-route-id="@item.TestimonialId"
+                          method="post">
+                        <button type="submit" class="approve-btn">
+                            Approve
+                        </button>
+                    </form>
+                    <form asp-action="RejectTestimonial"
+                          asp-route-id="@item.TestimonialId"
+                          method="post">
+                        <button type="submit" class="reject-btn">
+                            Reject
+                        </button>
+                    </form>
+
+                </div>
+            }
+        </div>
+    }
+</div>

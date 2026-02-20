@@ -1,0 +1,201 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link rel="stylesheet" href="~/style/main.css">
+    <link rel="stylesheet" href="~/style/dashboard.css">
+    @await RenderSectionAsync("styles",required:false)
+     <style>
+        .user-dropdown {
+            position: relative;
+            display: inline-block;
+        }
+
+        .user-profile-btn {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            background: none;
+            border: 1px solid #ddd;
+            padding: 8px 16px;
+            border-radius: 20px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+            .user-profile-btn:hover {
+                background: #f8f9fa;
+            }
+
+        .profile-img-small {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            object-fit: cover;
+        }
+
+        .dropdown-menu {
+            position: absolute;
+            top: 100%;
+            right: 0;
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+            min-width: 200px;
+            padding: 10px 0;
+            display: none;
+            z-index: 1000;
+        }
+
+        .user-dropdown:hover .dropdown-menu {
+            display: block;
+        }
+
+        .dropdown-item {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 10px 20px;
+            color: #333;
+            text-decoration: none;
+            transition: background 0.3s;
+        }
+
+            .dropdown-item:hover {
+                background: #f8f9fa;
+            }
+
+            .dropdown-item img {
+                width: 16px;
+                height: 16px;
+            }
+
+        .dropdown-divider {
+            height: 1px;
+            background: #eee;
+            margin: 5px 0;
+        }
+
+        .logout {
+            color: #ef4444;
+        }
+</style>
+</head>
+<body>
+    @using System.Security.Claims
+
+    @{
+        var isAuthenticated = User.Identity.IsAuthenticated;
+        var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+        var userRole = User.FindFirst(ClaimTypes.Role)?.Value;
+        var userName = User.Identity?.Name;
+        var profileImage = User.FindFirst("ProfileImage")?.Value;
+    }
+
+    <header class="header">
+        <div class="container">
+            <div class="logo">
+                <a asp-controller="HomePage" asp-action="Index">
+                    <img src="~/imgs/logo.svg" alt="CarRental">
+                </a>
+            </div>
+
+            <nav>
+                <ul class="links">
+                    <li><a asp-controller="HomePage" asp-action="Index">Home</a></li>
+                    <li><a asp-controller="Car" asp-action="Index">Cars</a></li>
+                    <li>
+                        <a href="#" class="list-cars">
+                            List cars
+                        </a>
+                    </li>
+                </ul>
+            </nav>
+            <div class="header-right">
+                <div class="search-bar">
+                    <input type="text" placeholder="Search cars">
+                    <img src="~/imgs/search_icon.svg" alt="">
+                </div>
+                @{
+                    if (!isAuthenticated){
+                        <button class="signup-btn" id="openAuthModel">Sign Up</button>
+                    }
+                    else
+                    {
+                        <div class="user-dropdown">
+                            <button class="user-profile-btn">
+                        <img src="@profileImage" alt="Profile"
+                                     onerror="this.src='/imgs/profile_img.svg'"
+                                     class="profile-img-small">
+                        <span>@userName</span>
+                    </button>
+                            <div class="dropdown-menu">
+
+                                <a asp-controller="User" asp-action="Profile" class="dropdown-item">
+                                    <img src="~/imgs/upload-cloud.svg"> My Profile
+                                </a>
+
+                                <a asp-controller="Admin" asp-action="Main" class="dropdown-item">
+                                    <img src="~/imgs/dash-icon.svg"> Dashboard
+                                </a>
+                                <div class="dropdown-divider"></div>
+                                <a asp-controller="Account" asp-action="Logout" class="dropdown-item logout">
+                                    <img src="~/imgs/logout-icon.svg"> Logout
+                                </a>
+                            </div>
+                        </div>
+
+                    }
+                }
+            </div>
+            <div class="menu-toggle">
+                <span></span>
+            </div>
+        </div>
+    </header>
+    <div class="admin-wrapper">
+        <aside class="sidebar">
+            <div class="admin-profile">
+                <img src="@profileImage"
+                     alt="Profile"
+                     onerror="this.src='/imgs/profile_img.svg'"
+                     class="profile-img-small">
+                <h3>@userName</h3>
+            </div>
+            <div class="admin-menu">
+                <a class="@(ViewContext.RouteData.Values["action"]?.ToString()=="Main"?"active":"")"
+                asp-controller="Admin" asp-action="Main"><img src="~/imgs/dash-icon.svg"> Dashboard</a>
+                <a class="@(ViewContext.RouteData.Values["action"]?.ToString() == "AddCar" ? "active" : "")"
+                    asp-controller="Admin" asp-action="AddCar"><img src="~/imgs/add-icon.svg"> Add Car</a>
+                <a class="@(ViewContext.RouteData.Values["action"]?.ToString() == "ManageCar" ? "active" : "")"
+                    asp-controller="Admin" asp-action="ManageCar"><img src="~/imgs/car-icon.svg"> Manage Cars</a>
+                <a class="@(ViewContext.RouteData.Values["action"]?.ToString() == "ManageBooking" ? "active" : "")"
+                    asp-controller="Admin" asp-action="ManageBooking"><img src="~/imgs/book-icon.svg"> Manage Bookings</a>
+                <a class="@(ViewContext.RouteData.Values["action"]?.ToString() == "ManageUsers" ? "active" : "")"
+                    asp-controller="Admin" asp-action="ManageUsers"><img src="~/imgs/book-icon.svg"> Manage Users</a>
+                <a class="@(ViewContext.RouteData.Values["action"]?.ToString() == "ManageCategories" ? "active" : "")"
+                    asp-controller="Admin" asp-action="ManageCategories"><img src="~/imgs/book-icon.svg"> Manage Categories</a>
+                <a class="@(ViewContext.RouteData.Values["action"]?.ToString() == "ManageLocations" ? "active" : "")"
+                    asp-controller="Admin" asp-action="ManageLocations"><img src="~/imgs/book-icon.svg"> Manage Locations</a>
+                <a class="@(ViewContext.RouteData.Values["action"]?.ToString() == "ManageFeatures" ? "active" : "")"
+                    asp-controller="Admin" asp-action="ManageFeatures"><img src="~/imgs/book-icon.svg"> Manage Features</a>
+                <a class="@(ViewContext.RouteData.Values["action"]?.ToString() == "ManageReviews" ? "active" : "")"
+                    asp-controller="Admin" asp-action="ManageReviews"><img src="~/imgs/book-icon.svg"> Manage Reviews</a>
+                <a class="@(ViewContext.RouteData.Values["action"]?.ToString() == "Profile" ? "active" : "")"
+                   asp-controller="Admin" asp-action="Profile"><img src="~/imgs/add-icon.svg">My Profile</a>
+                <a class="@(ViewContext.RouteData.Values["action"]?.ToString() == "PendingTestimonials" ? "active" : "")"
+                   asp-controller="Admin" asp-action="PendingTestimonials"><img src="~/imgs/add-icon.svg">Manage Testimonials</a>
+                <a class="@(ViewContext.RouteData.Values["action"]?.ToString() == "PendingCarRequests" ? "active" : "")"
+                   asp-controller="Admin" asp-action="PendingCarRequests"><img src="~/imgs/add-icon.svg">Manage cars User Request</a>
+            </div>
+        </aside>
+        @RenderBody();
+    </div>
+    <script src="~/js/main.js"></script>
+    @await RenderSectionAsync("Scripts",required:false);
+    @* <script src="~/js/dashboard.js"></script> *@
+</body>
+</html>

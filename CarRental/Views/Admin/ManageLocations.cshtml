@@ -1,0 +1,181 @@
+﻿@model IEnumerable<CarRental.ViewModels.LocationsWithCountVM>
+@{
+    Layout = "_AdminDashboard";
+    ViewData["Title"] = "Manage Locations";
+}
+@section styles {
+    <link rel="stylesheet" href="~/style/manageLocations.css">
+    <style>
+        /* Alert container */
+        .custom-alert {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 14px 18px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+            font-size: 14px;
+            font-weight: 500;
+            position: relative;
+            animation: fadeIn 0.3s ease-in-out;
+            transition: opacity 0.3s ease, transform 0.3s ease;
+        }
+
+        /* Close button */
+        .alert-close {
+            margin-left: auto;
+            background: none;
+            border: none;
+            font-size: 18px;
+            cursor: pointer;
+            color: #166534;
+            opacity: 0.6;
+            transition: 0.2s;
+        }
+
+            .alert-close:hover {
+                opacity: 1;
+            }
+
+        /* Hide animation */
+        .custom-alert.hide {
+            opacity: 0;
+            transform: translateY(-5px);
+        }
+        /* ================= Success Alert ================= */
+        .custom-alert {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 14px 18px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+            font-size: 14px;
+            font-weight: 500;
+            animation: fadeIn 0.3s ease-in-out;
+        }
+
+        /* Success Style */
+        .success-alert {
+            background-color: #ecfdf5;
+            color: #166534;
+            border: 1px solid #bbf7d0;
+        }
+
+        /* Icon circle */
+        .alert-icon {
+            background: #22c55e;
+            color: white;
+            width: 22px;
+            height: 22px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 13px;
+        }
+
+        .add-btn{
+            text-decoration:none;
+        }
+    </style>
+}
+    <main class="dashboard-content">
+        <header class="content-header">
+            <h1>Manage Locations</h1>
+            <p>Manage pickup and return locations where customers can rent cars</p>
+        </header>
+    @if (TempData["SuccessMessage"] != null)
+    {
+        <div class="custom-alert success-alert" id="successAlert">
+            <span class="alert-icon">✓</span>
+            <span>@TempData["SuccessMessage"]</span>
+            <button class="alert-close" onclick="closeAlert()">X</button>
+        </div>
+    }
+        <div class="manage-locations-card">
+            <div class="actions-bar">
+                <div class="search-box">
+                    <input type="text" id="searchlocations" placeholder="Search locations...">
+                </div>
+            <a asp-action="AddLocation" asp-controller="Admin"
+                    class="add-btn">+ Add Location
+                </a>
+            </div>
+            <table class="locations-table">
+                <thead>
+                    <tr>
+                        <th>Location Name</th>
+                        <th>Address</th>
+                        <th>City</th>
+                        <th>Cars Count</th>
+                        <th>Status</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                @foreach(var location in Model)
+                {
+                    <tr>
+                        <td class="locationName">@location.LocationName</td>
+                        <td class="Address">@location.Address</td>
+                        <td>@location.City</td>
+                        <td>@location.CarCount</td>
+                        <td>
+                            <span class="status-pill @(location.IsActive ? "active" : "inactive")">
+                                @(location.IsActive ? "Active" : "NotActive")
+                            </span>
+                        </td>
+                        <td class="actions-cell">
+                            <a asp-controller="Admin" asp-action="EditLocation" asp-route-id="@location.LocationId"
+                               title="Edit">
+                                <img src="~/imgs/edit-eye.svg">
+                                </a>
+                            <form asp-controller="Admin"
+                                  asp-action="DeleteLocation"
+                                  asp-route-id="@location.LocationId"
+                                  method="post"
+                                  style="display:inline;">
+
+                                <button type="submit" style="background:none;border:none;padding:0;"
+                                        onclick="return confirm('Are you sure you want to delete this category?')">
+                                    <img src="~/imgs/trash.svg" title="Delete" />
+                                </button>
+                            </form>
+                        </td>
+                    </tr>
+                }
+                </tbody>
+            </table>
+        </div>
+    </main>
+@section Scripts {
+    <script>
+        function closeAlert(){
+            const alert = document.getElementById("successAlert");
+            if(alert){
+                alert.classList.add("hide");
+                setTimeout(()=>alert.remove(),300)
+            }
+        }
+        // Auto close after 4 seconds
+        setTimeout(()=>{
+            closeAlert();
+        },4000)
+    </script>
+    <script>
+        const searchInput = document.getElementById("searchlocations");
+        searchInput.addEventListener("keyup",search);
+        function search(){
+            const searchText = searchInput.value.toLowerCase().trim();
+            const rows = document.querySelectorAll(".locations-table tbody tr");
+            rows.forEach(row=>{
+                const locationName = row.querySelector(".locationName")?.innerText.toLowerCase() || "";
+                const Address = row.querySelector(".Address")?.innerText.toLowerCase() || "";
+                const matchSearch = locationName.includes(searchText)||
+                Address.includes(searchText);
+                row.style.display = matchSearch ? "":"none";
+            })
+        }
+    </script>
+}

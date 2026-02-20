@@ -1,0 +1,78 @@
+﻿@model CarRental.ViewModels.DashboardViewModel
+@{
+    Layout = "_AdminDashboard";
+    ViewData["Title"] = "MainPage";
+}
+@section styles{
+    <link rel="stylesheet" href="~/style/mainPageDashboard.css">
+}
+    <main class="dashboard-content">
+        <header class="content-header">
+            <h1>Admin Dashboard</h1>
+            <p>
+                Monitor overall platform performance including total cars, bookings, revenue, and recent activities.
+            </p>
+        </header>
+        <div class="stats-grid">
+            <div class="stat-card">
+                <div class="stat-info">
+                    <span>Total Users</span>
+                <strong>@Model.TotalUsers</strong>
+                </div>
+            <div class="stat-icon blue"><img src="~/imgs/car-blue.svg"></div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-info">
+                    <span>Total Cars</span>
+                <strong>@Model.TotalCars</strong>
+                </div>
+            <div class="stat-icon blue"><img src="~/imgs/car-blue.svg"></div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-info">
+                    <span>Total Bookings</span>
+                <strong>@Model.TotalBookings</strong>
+                </div>
+            <div class="stat-icon blue"><img src="~/imgs/book-blue.svg"></div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-info">
+                    <span>Pending Bookings</span>
+                <strong>@Model.PendingBookings</strong>
+                </div>
+            <div class="stat-icon orange"><img src="~/imgs/alert.svg"></div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-info">
+                    <span>Completed Bookings</span>
+                <strong>@Model.CompletedBookings</strong>
+                </div>
+            <div class="stat-icon blue"><img src="~/imgs/check-blue.svg"></div>
+            </div>
+        </div>
+        <div class="dashboard-main-grid">
+            <section class="recent-bookings-card">
+                <h2>Recent Bookings</h2>
+                <p>Latest customer bookings</p>
+                <div class="booking-table">
+                @foreach (var item in Model.RecentBookings)
+                {
+                    <div class="booking-row">
+                        <div class="car-icon-box"><img src="~/imgs/check-blue.svg"></div>
+                        <div class="b-details">
+                            <h4>@item.Car.Brand @item.Car.Model</h4>
+                            <span>@item.BookingDate</span>
+                        </div>
+                        <div class="b-price">@item.TotalPrice</div>
+                        <div class="b-status confirmed">@item.Status</div>
+                    </div>
+                }
+                </div>
+            </section>
+            <section class="revenue-card">
+                <h2>Monthly Revenue</h2>
+                <p>Revenue for current month</p>
+                <div class="revenue-amount">@Model.MonthlyRevenue</div>
+            </section>
+        </div>
+    </main>

@@ -1,0 +1,178 @@
+:root {
+    --primary-bg-color: #FFFFFF;
+    --sec-bg-color: #F1F5F9;
+    --primary-btn-color: #0558FE;
+    --secondary-btn-color: #A9CFFF;
+    --text-color: #414141;
+}
+.dashboard-content{
+    display:flex;
+    flex-direction:column;
+}
+.header {
+    background-color: #fff;
+}
+
+/* --- My Booking Hero --- */
+.Mybooking_Hero {
+    padding: 60px 0 30px;
+    text-align: left;
+    max-width: 1280px;
+    margin: 0 auto;
+    padding-left: 48px;
+}
+
+.Mybooking_Hero h1 {
+    font-size: 32px;
+    font-weight: 700;
+    margin-bottom: 5px;
+}
+
+.Mybooking_Hero p {
+    color: #64748b;
+    font-size: 16px;
+}
+
+/* --- Booking Cards --- */
+.booking-list {
+    padding-bottom: 100px;
+}
+
+.booking-list .container {
+    display: flex;
+    flex-direction: column;
+}
+
+.booking-card {
+    background: #fff;
+    border: 1px solid #f1f5f9;
+    border-radius: 12px;
+    display: flex;
+    padding: 24px;
+    gap: 30px;
+    margin-bottom: 20px;
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
+    align-items: center;
+    width: 100%;
+}
+
+.car-info-wrapper {
+    flex: 1.5;
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+.car-img img {
+    width: 280px;
+    height: 160px;
+    object-fit: cover;
+    border-radius: 8px;
+}
+
+.car-details h3 {
+    font-size: 18px;
+    margin-bottom: 5px;
+}
+
+.car-meta {
+    font-size: 14px;
+    color: #94a3b8;
+}
+
+.booking-details {
+    flex: 2;
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+.status-badge {
+    display: flex;
+    gap: 10px;
+    align-items: center;
+    margin-bottom: 5px;
+}
+
+.booking-id {
+    font-size: 12px;
+    color: #1F2937;
+    background: #F3F4F6;
+    padding: 6px 12px;
+    border-radius: 4px;
+}
+
+.status.confirmed {
+    color: #06A764;
+    background: #BBFFD782;
+    font-size: 12px;
+    padding: 6px 12px;
+    border-radius: 16px;
+    text-transform: capitalize;
+}
+
+.info-row {
+    display: flex;
+    gap: 12px;
+    align-items: flex-start;
+}
+
+.info-row img {
+    width: 18px;
+    margin-top: 3px;
+}
+
+.info-row label {
+    display: block;
+    font-size: 13px;
+    color: #94a3b8;
+}
+
+.info-row span {
+    font-size: 14px;
+    font-weight: 500;
+    color: #1e293b;
+}
+
+.price-section {
+    flex: 1;
+    text-align: right;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+
+.price-section label {
+    font-size: 14px;
+    color: #64748b;
+}
+
+.price-section .price {
+    font-size: 28px;
+    font-weight: 700;
+    color: #0558FE;
+}
+
+.book-date {
+    font-size: 12px;
+    color: #94a3b8;
+    margin-top: 5px;
+}
+
+@media (max-width: 992px) {
+    .booking-card {
+        padding: 0;
+    }
+
+    .booking-card {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+    .price-section {
+        text-align: left;
+        border-top: 1px solid #f1f5f9;
+        padding-top: 15px;
+        width: 100%;
+    }
+}

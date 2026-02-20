@@ -1,0 +1,64 @@
+﻿.details-card {
+    background: #fff;
+    border-radius: 12px;
+    padding: 25px;
+    margin-top: 20px;
+    box-shadow: 0 1px 4px rgba(0,0,0,0.08);
+}
+.dashboard-content {
+    padding: 20px 30px;
+    width: 100%;
+    max-width: 100%;
+}
+
+.details-section {
+    margin-bottom: 30px;
+}
+
+    .details-section h3 {
+        margin-bottom: 15px;
+        color: #1e293b;
+    }
+
+.details-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 20px;
+}
+
+.label {
+    display: block;
+    font-size: 13px;
+    color: #64748b;
+}
+
+.customer-box,
+.car-box {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+}
+
+    .customer-box img,
+    .car-box img {
+        width: 70px;
+        height: 70px;
+        border-radius: 10px;
+        object-fit: cover;
+    }
+
+.review-box {
+    background: #f8fafc;
+    padding: 15px;
+    border-radius: 8px;
+}
+
+.back-btn {
+    margin-top: 20px;
+}
+
+    .back-btn a {
+        text-decoration: none;
+        color: #2563eb;
+        font-weight: 500;
+    }

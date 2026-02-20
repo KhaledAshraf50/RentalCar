@@ -1,0 +1,94 @@
+﻿@model CarRental.Models.Review
+
+@{
+    Layout = "_UserDashboard";
+    ViewData["Title"] = "Edit Review";
+}
+
+<style>
+    .dashboard-content{
+        padding:20px;
+        margin:10px auto;
+        width:50%;
+    }
+    .edit-card {
+        max-width: 700px;
+        margin: auto;
+        background: #fff;
+        padding: 30px;
+        border-radius: 12px;
+        box-shadow: 0 5px 20px rgba(0,0,0,0.08);
+    }
+
+        .edit-card h2 {
+            margin-bottom: 20px;
+        }
+
+    .form-group {
+        margin-bottom: 20px;
+    }
+
+    textarea {
+        width: 100%;
+        padding: 12px;
+        border-radius: 8px;
+        border: 1px solid #ddd;
+        resize: none;
+    }
+
+    .rating-display {
+        font-size: 20px;
+        color: #ffc107;
+        margin-bottom: 15px;
+    }
+
+    .btn-primary {
+        background: #1e88e5;
+        color: white;
+        padding: 10px 20px;
+        border: none;
+        border-radius: 8px;
+    }
+
+    .btn-secondary {
+        margin-left: 10px;
+    }
+</style>
+
+<main class="dashboard-content">
+    <div class="edit-card">
+
+        <h2>Edit Your Review</h2>
+
+        <!-- عرض التقييم بدون تعديل -->
+        <div class="rating-display">
+            @for (int i = 0; i < Model.Rating; i++)
+            {
+                <span>★</span>
+            }
+        </div>
+
+        <form asp-action="EditReview" method="post">
+
+            @Html.AntiForgeryToken()
+
+            <input type="hidden" name="id" value="@Model.ReviewId" />
+
+            <div class="form-group">
+                <label>Comment</label>
+                <textarea name="comment"
+                  rows="5">@Model.Comment</textarea>
+            </div>
+
+            <button type="submit" class="btn-primary">
+                Update Comment
+            </button>
+
+            <a asp-action="MyReview" class="btn-secondary" style="text-decoration:none;">
+                Cancel
+            </a>
+
+        </form>
+
+    </div>
+</main>

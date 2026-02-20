@@ -1,0 +1,597 @@
+:root {
+    --primary-bg-color: #FFFFFF;
+    --sec-bg-color: #F1F5F9;
+    --primary-btn-color: #0558FE;
+    --secondary-btn-color: #A9CFFF;
+    --text-color: #414141;
+}
+
+/* start hero-section */
+.hero-section {
+    background-color: var(--sec-bg-color);
+    padding: 120px 0 60px;
+    position: relative;
+}
+
+.hero-container {
+    max-width: 1280px;
+    margin: 0 auto;
+    /* بيوسّط */
+    padding: 0 48px;
+
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    /* بيوسّط العناصر */
+}
+
+
+.hero-section h1 {
+    font-weight: 600;
+    font-size: 50px;
+    color: var(--text-color);
+    margin-bottom: 40px;
+}
+
+.booking-bar {
+    background-color: var(--primary-bg-color);
+    width: 880px;
+    height: 90px;
+    display: flex;
+    align-items: center;
+    gap: 30px;
+    padding: 20px 30px;
+    border-radius: 80px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
+}
+
+.booking-item {
+    display: flex;
+    flex-direction: column;
+    text-align: left;
+    position: relative;
+}
+
+.booking-item select {
+    border: none;
+    outline: none;
+    font-size: 16px;
+    color: #111;
+    background: transparent;
+    appearance: none;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    cursor: pointer;
+    padding-right: 20px;
+}
+
+.drop-list {
+    position: relative;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.drop-list img {
+    position: absolute;
+    right: 0;
+    pointer-events: none;
+    /* مهم جدًا */
+    width: 14px;
+}
+
+
+.booking-item span {
+    width: 21px;
+    height: 21px;
+    top: 329px;
+    Left: 462px;
+}
+
+.booking-item label {
+    font-size: 16px;
+    color: #2B3441E5;
+    margin-bottom: 5px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    cursor: pointer;
+}
+
+.booking-item input {
+    border: none;
+    outline: none;
+    font-size: 16px;
+}
+
+.search-btn {
+    background-color: var(--primary-btn-color);
+    border: none;
+    color: var(--primary-bg-color);
+    padding: 15px 30px;
+    border-radius: 50px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    cursor: pointer;
+    margin-left: auto;
+}
+
+.search-btn img {
+    filter: brightness(0) invert(1);
+    /* يخلي الأيقونة بيضا */
+}
+
+.hero-image {
+    margin-top: 40px;
+}
+
+.hero-image img {
+    width: 858px;
+    height: auto;
+    display: block;
+}
+
+@media (max-width: 480px) {
+    .hero-section {
+        padding: 40px 0 30px;
+    }
+
+    .hero-section h1 {
+        font-size: 26px;
+        margin-bottom: 16px;
+        text-align: center;
+    }
+
+    .booking-bar {
+        background-color: #fff;
+        padding: 20px;
+        border-radius: 16px;
+        gap: 16px;
+        flex-direction: column;
+        height: auto;
+        width: 100%;
+    }
+
+    .booking-item input,
+    .booking-item select {
+        padding: 8px 0;
+    }
+
+    .booking-item {
+        width: 100%;
+    }
+
+    .search-btn {
+        width: 100%;
+        justify-content: center;
+        padding: 14px;
+        border-radius: 30px;
+        margin-top: 10px;
+    }
+
+    .hero-image img {
+        width: 100%;
+        max-width: 360px;
+    }
+
+    .drop-list {
+        width: 100%;
+        position: relative;
+    }
+
+    .drop-list img {
+        position: absolute;
+        right: 100px;
+    }
+}
+
+/* شاشات التابلت والأجهزة المتوسطة */
+@media (min-width: 481px) and (max-width: 1024px) {
+    .hero-section h1 {
+        font-size: 38px;
+        text-align: center;
+    }
+
+    .booking-bar {
+        width: 100%;
+        max-width: 720px;
+        height: auto;
+        flex-wrap: wrap;
+        justify-content: center;
+        gap: 20px;
+        padding: 30px;
+        border-radius: 30px;
+    }
+
+    .booking-item {
+        flex: 1 1 200px;
+        min-width: 150px;
+    }
+
+    .search-btn {
+        margin-left: 0;
+        width: 60%;
+        justify-content: center;
+    }
+
+    .hero-image img {
+        width: 100%;
+        max-width: 600px;
+    }
+}
+
+/* end hero-section  */
+/* start Featured Vehicles  */
+.Featured-Vehicles {
+    background-color: var(--primary-bg-color);
+}
+
+.Featured-Vehicles .container {
+    padding: 50px;
+    margin: 0 auto;
+    display: flex;
+    flex-direction: column;
+}
+
+.Featured-Vehicles h1 {
+    text-align: center;
+    font-weight: 600;
+    font-size: 40px;
+}
+
+.featured-para {
+    color: var(--text-color);
+    font-size: 16px;
+    font-weight: 400;
+    text-align: center;
+}
+
+.Featured-Vehicles #explore {
+    text-decoration: none;
+    margin-top: 40px;
+    color: #2B3441;
+    background-color: #fff;
+    padding: 15px 30px;
+    border: 1px solid var(--text-color);
+    border-radius: 8px;
+    box-shadow: 0 5px 10px rgba(0, 0, 0, 0.05);
+    display: flex;
+    align-items: center;
+}
+
+.Featured-Vehicles a:hover {
+    background-color: var(--sec-bg-color);
+}
+
+/* .Featured-Vehicles img {
+    padding-left: 10px;
+} */
+
+@media (max-width:767px) {
+    .Featured-Vehicles .container {
+        padding: 25px;
+    }
+
+    .Featured-Vehicles h1 {
+        padding-top: 30px;
+        font-size: 35px;
+    }
+
+    .Featured-Vehicles p {
+        font-size: 14px;
+        margin: 0;
+    }
+}
+
+/* end Featured Vehicles */
+.car-box {
+    background: linear-gradient(105deg, #0558FE 0%, #A9CFFF 100%);
+    width: 90%;
+    margin: 0 auto 50px;
+    border-radius: 15px;
+    overflow: hidden;
+}
+
+.car-box .container {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    /* flex-wrap: nowrap; */
+    padding: 40px 60px;
+    /* زيادة الحشو الجانبي */
+}
+
+.texts {
+    flex: 1;
+    /* النص يأخذ المساحة المتاحة */
+    max-width: 550px;
+}
+
+.car-box h1 {
+    color: #FFF;
+    font-weight: 600;
+    font-size: 28px;
+    margin-bottom: 20px;
+}
+
+.car-box p {
+    color: rgba(255, 255, 255, 0.9);
+    /* شفافية بسيطة لتعطي مظهر احترافي */
+    font-weight: 400;
+    font-size: 16px;
+    line-height: 1.5;
+    margin-bottom: 30px;
+}
+
+.car-box a {
+    background-color: #FFF;
+    color: #0257FF;
+    font-weight: 600;
+    font-size: 14px;
+    text-decoration: none;
+    padding: 10px 20px;
+    border-radius: 10px;
+    transition: 0.3s;
+}
+
+.car-box a:hover {
+    background-color: #f0f0f0;
+    transform: scale(1.01);
+}
+
+.Boxcar-image {
+    flex: 1;
+    display: flex;
+    justify-content: flex-end;
+}
+
+.Boxcar-image img {
+    max-width: 70%;
+    height: auto;
+}
+
+@media (max-width: 768px) {
+    .car-box {
+        background: linear-gradient(180deg, #0558FE 0%, #A9CFFF 100%);
+        width: 95%;
+        padding: 0;
+        margin-bottom: 20px;
+    }
+
+    .car-box .container {
+        flex-direction: column;
+        padding: 40px 25px 0 25px;
+        text-align: left;
+        align-items: flex-start;
+    }
+
+    .texts {
+        max-width: 100%;
+        margin-bottom: 40px;
+    }
+
+    .car-box h1 {
+        font-size: 26px;
+        line-height: 1.2;
+    }
+
+    .car-box p {
+        font-size: 16px;
+        line-height: 1.4;
+        max-width: 100%;
+    }
+
+    .car-box a {
+        padding: 12px 35px;
+        /* تكبير الزر قليلاً ليسهل الضغط عليه */
+        font-size: 16px;
+        display: inline-block;
+    }
+
+    .car-image {
+        width: 100%;
+        display: flex;
+        justify-content: center;
+        margin-bottom: -1px;
+        /* لضمان عدم وجود فجوة بيضاء في الأسفل */
+    }
+
+    .Boxcar-image img {
+        width: 100%;
+        /* جعل صورة السيارة تملأ العرض المتاح */
+        max-width: 400px;
+        /* تحديد أقصى عرض للسيارة */
+        height: auto;
+    }
+}
+
+/* start testimonials */
+/* end testimonials */
+.testimonials {
+    padding: 80px 0;
+    background-color: #fff;
+    font-family: 'Poppins', sans-serif;
+}
+
+.testimonials .container {
+    display: flex;
+    flex-direction: column;
+}
+
+.section-header {
+    text-align: center;
+    margin-bottom: 50px;
+}
+
+.section-header h2 {
+    font-size: 32px;
+    color: #111;
+    font-weight: 700;
+    margin-bottom: 15px;
+}
+
+.section-header p {
+    color: #64748b;
+    max-width: 600px;
+    margin: 0 auto;
+    line-height: 1.6;
+}
+
+.testimonials-grid {
+    display: flex;
+    gap: 25px;
+    justify-content: center;
+    flex-wrap: wrap;
+    /* لضمان التجاوب في الشاشات الصغيرة */
+}
+
+.testimonial-card {
+    background: #fff;
+    padding: 30px;
+    border-radius: 15px;
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.05);
+    /* ظل ناعم مثل الصورة */
+    flex: 1;
+    min-width: 300px;
+    max-width: 380px;
+    transition: transform 0.3s ease;
+}
+
+.testimonial-card:hover {
+    transform: translateY(-5px);
+}
+
+.user-info {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    margin-bottom: 20px;
+}
+
+.user-info img {
+    width: 60px;
+    height: 60px;
+    border-radius: 50%;
+    object-fit: cover;
+}
+
+.user-details h3 {
+    font-size: 18px;
+    margin: 5px;
+    color: #1e293b;
+}
+
+.user-details span {
+    font-size: 14px;
+    color: #94a3b8;
+}
+
+.stars {
+    color: #0558FE;
+    /* لون النجوم الأزرق من هويتك */
+    font-size: 18px;
+    margin-bottom: 15px;
+    font-weight: bold;
+}
+
+.testimonial-card p {
+    color: #475569;
+    font-size: 15px;
+    line-height: 1.7;
+}
+
+@media (max-width: 768px) {
+    .testimonials-grid {
+        flex-direction: column;
+        align-items: center;
+    }
+
+    .testimonial-card {
+        flex: 1;
+        min-width: 200px;
+        max-width: 280px;
+        padding: 15px;
+    }
+}
+
+/* start newsletter */
+.newsletter {
+    padding: 0 0 100px;
+    text-align: center;
+    background-color: #fff;
+}
+
+.newsletter .container {
+    display: flex;
+    flex-direction: column;
+}
+
+.newsletter h2 {
+    font-size: 36px;
+    font-weight: 700;
+    margin-bottom: 10px;
+}
+
+.newsletter p {
+    color: #64748b;
+    margin-bottom: 40px;
+    line-height: 1.4;
+}
+
+.subscribe-form {
+    display: flex;
+    justify-content: center;
+    max-width: 600px;
+    margin: 0 auto;
+    border: 1px solid #e2e8f0;
+    border-radius: 8px;
+    overflow: hidden;
+    width: 100%;
+}
+
+.subscribe-form input {
+    flex: 1;
+    padding: 15px 20px;
+    border: none;
+    outline: none;
+    font-size: 16px;
+}
+
+.subscribe-form button {
+    background-color: #2563eb;
+    /* نفس لون الصورة الأزرق */
+    color: white;
+    padding: 0 40px;
+    border: none;
+    font-weight: 600;
+    cursor: pointer;
+    transition: 0.3s;
+}
+
+.subscribe-form button:hover {
+    background-color: #1d4ed8;
+}
+
+@media (max-width:767px) {
+    .newsletter h2 {
+        font-size: 26px;
+    }
+
+    .newsletter .container {
+        display: flex;
+        flex-direction: column;
+        padding: 10px;
+    }
+
+    .subscribe-form {
+        width: 320px;
+    }
+
+    .subscribe-form button {
+        width: 120px;
+        padding: 0;
+    }
+}
+
+/* end newsletter */

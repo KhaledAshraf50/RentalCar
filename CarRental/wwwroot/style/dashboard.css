@@ -1,0 +1,128 @@
+.header {
+    background-color: #fff;
+}
+
+.admin-wrapper {
+    display: flex;
+    min-height: 100vh;
+    background-color: #f8fafc;
+}
+
+/* Sidebar Styling */
+.sidebar {
+    width: 260px;
+    background: #fff;
+    border-right: 1px solid #e2e8f0;
+    padding: 40px 20px;
+}
+
+.admin-profile {
+    text-align: center;
+    margin-bottom: 40px;
+}
+
+.admin-profile img {
+    width: 80px;
+    height: 80px;
+    border-radius: 50%;
+    margin-bottom: 15px;
+}
+
+.admin-menu a {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 12px 15px;
+    text-decoration: none;
+    color: #64748b;
+    border-radius: 8px;
+    margin-bottom: 5px;
+    transition: 0.3s;
+}
+
+.admin-menu a.active {
+    background: #eff6ff;
+    color: #2563eb;
+    width: 96%;
+    /* border-right: 5px solid #4C88FF; */
+    position: relative;
+}
+
+.admin-menu a.active::after {
+    content: "";
+    position: absolute;
+    width: 6px;
+    height: 32px;
+    background-color: #4C88FF;
+    right: 0;
+    border-radius: 4px 0 0 4px;
+}
+
+@media (max-width: 1024px) {
+
+     .admin-wrapper {
+        flex-direction: column;
+    }
+
+    .sidebar {
+        width: 95%;
+        padding: 20px;
+        border-right: none;
+        border-bottom: 1px solid #e2e8f0;
+    }
+
+    .admin-menu {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 10px;
+        justify-content: center;
+    }
+
+    .admin-menu a {
+        width: 48%;
+        justify-content: center;
+    }
+
+    .admin-menu a.active::after {
+        display: none;
+    }
+}
+
+@media (max-width: 768px) {
+    .admin-wrapper {
+        flex-direction: column;
+    }
+
+    .sidebar {
+        width: 90%;
+        padding: 20px;
+        border-right: none;
+        border-bottom: 1px solid #e2e8f0;
+    }
+
+    .admin-menu {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 10px;
+        justify-content: center;
+    }
+
+    .admin-menu a {
+        width: 48%;
+        justify-content: center;
+    }
+
+    .admin-menu a.active::after {
+        display: none;
+    }
+}
+
+@media (max-width: 480px) {
+/*    .sidebar {
+        padding: 10px 0;
+    }*/
+
+    .admin-profile h3 {
+        font-size: 16px;
+    }
+}

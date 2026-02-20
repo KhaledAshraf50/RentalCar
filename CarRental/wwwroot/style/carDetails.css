@@ -1,0 +1,165 @@
+.header {
+    background-color: #fff;
+}
+
+.car-details-page {
+    padding: 40px 0;
+    background-color: #fff;
+}
+
+.car-details-page .container {
+    display: flex;
+    flex-direction: column;
+}
+
+.back-link {
+    display: inline-block;
+    margin-bottom: 20px;
+    color: #64748b;
+    text-decoration: none;
+    font-size: 14px;
+    text-align: left;
+    align-self: self-start;
+}
+
+.details-wrapper {
+    display: grid;
+    grid-template-columns: 2fr 1fr;
+    /* تقسيم 66% للمحتوى و 33% للحجز */
+    gap: 40px;
+}
+
+/* الصور والمعلومات */
+.car-main-image img {
+    width: 100%;
+    min-width:750px;
+    border-radius: 15px;
+    object-fit: contain;
+}
+
+.car-title-section {
+    margin: 30px 0;
+    border-bottom: 1px solid #f1f5f9;
+    padding-bottom: 20px;
+}
+
+.car-title-section h1 {
+    font-size: 32px;
+    font-weight: 700;
+}
+
+.specs-grid {
+    display: flex;
+    gap: 15px;
+    margin-bottom: 40px;
+}
+
+.spec-item {
+    flex: 1;
+    background: #f8fafc;
+    padding: 15px;
+    border-radius: 10px;
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+}
+
+.spec-item span {
+    font-size: 14px;
+    font-weight: 500;
+}
+
+/* المميزات */
+.features-list {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 15px;
+    margin-top: 15px;
+}
+
+.feature-check {
+    font-size: 14px;
+    color: #475569;
+}
+
+.feature-check span {
+    color: #2563eb;
+    margin-right: 8px;
+    font-weight: bold;
+}
+
+/* كارت الحجز الجانبي */
+.booking-sidebar {
+    background: #fff;
+    border: 1px solid #f1f5f9;
+    border-radius: 15px;
+    padding: 30px;
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.05);
+    height: fit-content;
+    position: sticky;
+    /* يظل الكارت ظاهراً عند التمرير */
+    top: 20px;
+}
+
+.price-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    margin-bottom: 25px;
+}
+
+.price-header .amount {
+    font-size: 28px;
+    font-weight: 700;
+}
+
+.form-group {
+    margin-bottom: 20px;
+}
+
+.form-group label {
+    display: block;
+    font-size: 14px;
+    margin-bottom: 8px;
+    font-weight: 500;
+}
+
+.form-group input {
+    width: 100%;
+    padding: 12px;
+    border: 1px solid #e2e8f0;
+    border-radius: 8px;
+    outline: none;
+}
+
+.book-now-btn {
+    width: 100%;
+    background-color: #2563eb;
+    color: white;
+    padding: 15px;
+    border: none;
+    border-radius: 8px;
+    font-weight: 600;
+    cursor: pointer;
+    margin-top: 10px;
+}
+
+.form-note {
+    text-align: center;
+    font-size: 12px;
+    color: #94a3b8;
+    margin-top: 15px;
+}
+
+/* التجاوب للموبايل */
+@media (max-width: 992px) {
+    .details-wrapper {
+        grid-template-columns: 1fr;
+    }
+
+    .specs-grid {
+        flex-wrap: wrap;
+    }
+}

@@ -1,0 +1,220 @@
+.dashboard-content {
+    margin: 16px;
+}
+.content-header h1 {
+    font-size: 26px;
+    padding: 10px;
+}
+
+.content-header p {
+    font-size: 14px;
+    max-width: 450px;
+    line-height: 1.4;
+    font-weight: 600;
+    padding: 10px;
+}
+
+.actions-bar-top {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin: 25px;
+    gap: 15px;
+}
+
+.filter-select {
+    padding: 10px 15px;
+    border: 1px solid #e2e8f0;
+    border-radius: 8px;
+    background-color: #fff;
+    color: #475569;
+    outline: none;
+    cursor: pointer;
+}
+
+.search-box {
+    flex: 1;
+    max-width: 350px;
+}
+
+.search-box input {
+    padding: 10px 15px;
+    border: 1px solid #e2e8f0;
+    border-radius: 8px;
+    width: 250px;
+    outline: none;
+}
+
+.search-box input:focus {
+    border-color: #2563eb;
+}
+
+.reviews-container {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.review-card {
+    background: #fff;
+    border-radius: 12px;
+    padding: 20px;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+    border: 1px solid #f1f5f9;
+}
+
+.review-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: 16px;
+}
+
+.reviewer-info {
+    display: flex;
+    gap: 12px;
+    align-items: center;
+}
+
+.reviewer-info img {
+    width: 45px;
+    height: 45px;
+    border-radius: 50%;
+    object-fit: cover;
+}
+
+.reviewer-info h4 {
+    margin: 0;
+    color: #1e293b;
+    font-size: 16px;
+}
+
+.review-meta {
+    margin: 2px 0 0;
+    font-size: 12px;
+    color: #94a3b8;
+}
+
+.review-actions {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    gap: 10px;
+}
+
+.action-buttons {
+    display: flex;
+    gap: 8px;
+}
+
+.btn-approve,
+.btn-reject,
+.btn-delete {
+    padding: 6px 14px;
+    border-radius: 6px;
+    font-size: 13px;
+    font-weight: 600;
+    cursor: pointer;
+    border: none;
+    transition: 0.2s;
+}
+
+.btn-approve {
+    background-color: #22c55e;
+    color: white;
+}
+
+.btn-approve:hover {
+    background-color: #16a34a;
+}
+
+.btn-reject {
+    background-color: #fee2e2;
+    color: #ef4444;
+}
+
+.btn-reject:hover {
+    background-color: #fecaca;
+}
+
+.btn-delete {
+    background: none;
+    padding: 5px;
+}
+
+.btn-delete img {
+    width: 50px;
+    opacity: 0.6;
+}
+
+.review-rating {
+    margin-bottom: 10px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.stars {
+    color: #f59e0b;
+    /* اللون الذهبي للنجوم */
+    font-size: 18px;
+    letter-spacing: 2px;
+}
+
+.rating-number {
+    font-weight: 700;
+    color: #1e293b;
+    font-size: 14px;
+}
+
+.review-comment {
+    color: #475569;
+    font-size: 14px;
+    line-height: 1.6;
+    margin: 0;
+}
+
+.status-badge {
+    padding: 4px 10px;
+    border-radius: 20px;
+    font-size: 11px;
+    font-weight: 600;
+}
+
+.status-badge.pending {
+    background: #fff7ed;
+    color: #c2410c;
+    padding: 6px 12px;
+}
+
+.status-badge.approved {
+    background: #f0fdf4;
+    color: #16a34a;
+    padding: 6px 12px;
+
+}
+
+@media (max-width: 650px) {
+    .actions-bar-top {
+        flex-direction: column;
+        gap: 50px;
+    }
+
+    .review-header {
+        flex-direction: column;
+        gap: 15px;
+    }
+
+    .review-actions {
+        align-items: flex-start;
+        width: 100%;
+    }
+
+    .action-buttons {
+        width: 100%;
+    }
+
+    .action-buttons button {
+        flex: 1;
+    }
+}

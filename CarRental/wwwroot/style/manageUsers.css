@@ -1,0 +1,198 @@
+.dashboard-content{
+    margin:16px;
+}
+.manage-users-card {
+    background: #fff;
+    border-radius: 12px;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+    overflow: hidden;
+    margin-top: 25px;
+}
+
+.content-header h1 {
+    font-size: 26px;
+    padding: 10px;
+}
+
+.content-header p {
+    font-size: 14px;
+    max-width: 400px;
+    line-height: 1.4;
+    font-weight: 600;
+    padding: 10px;
+}
+
+.actions-bar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 20px;
+    border-bottom: 1px solid #f1f5f9;
+    gap: 15px;
+    flex-wrap: wrap;
+    /* للتجاوب مع الشاشات الصغيرة */
+}
+
+.search-box {
+    flex: 1;
+    max-width: 350px;
+}
+
+.search-box input {
+    width: 100%;
+    padding: 10px 15px;
+    border: 1px solid #e2e8f0;
+    border-radius: 8px;
+    font-size: 14px;
+    outline: none;
+    transition: 0.3s;
+}
+
+.search-box input:focus {
+    border-color: #2563eb;
+    box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+}
+
+.add-btn {
+    background-color: #2563eb;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 8px;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: 0.3s;
+}
+
+.add-btn:hover {
+    background-color: #1d4ed8;
+}
+
+/* تنسيق الجدول */
+.users-table {
+    width: 100%;
+    border-collapse: collapse;
+    text-align: left;
+}
+
+.users-table th {
+    background-color: #fafafa;
+    padding: 15px 20px;
+    font-size: 13px;
+    color: #64748b;
+    font-weight: 500;
+    border-bottom: 1px solid #f1f5f9;
+}
+
+.users-table td {
+    padding: 15px 20px;
+    border-bottom: 1px solid #f1f5f9;
+    color: #475569;
+    font-size: 14px;
+    vertical-align: middle;
+    /* يخلي الكلام كله على خط واحد */
+    white-space: nowrap;
+    /* يمنع الكلام إنه ينزل سطر جديد ويخرب الشكل */
+}
+
+/* خلية المستخدم (الصورة + الاسم) */
+.user-cell,
+.actions-cell {
+    height: 100%;
+    display: grid;
+    align-items: center;
+    gap: 15px;
+    /* يضمن إنها واخدة ارتفاع الصف كله */
+}
+
+.users-table td:nth-child(7) {
+    padding: 26px;
+}
+
+.user-cell img {
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    object-fit: cover;
+}
+
+/* الألوان الخاصة بالأدوار (Role Pills) */
+.role-pill {
+    padding: 4px 10px;
+    border-radius: 6px;
+    font-size: 12px;
+    font-weight: 500;
+}
+
+.role-pill.admin {
+    background-color: #f1f5f9;
+    color: #1e293b;
+}
+
+.role-pill.user {
+    background-color: #eff6ff;
+    color: #2563eb;
+}
+
+/* الألوان الخاصة بالحالة (Status Pills) */
+.status-pill {
+    padding: 4px 10px;
+    border-radius: 20px;
+    font-size: 12px;
+}
+
+.status-pill.active {
+    background-color: #f0fdf4;
+    color: #22c55e;
+}
+
+.status-pill.inactive {
+    background-color: #f1f5f9;
+    color: #94a3b8;
+}
+
+/* أزرار الإجراءات */
+.actions-cell {
+    display: flex;
+    gap: 12px;
+}
+
+.actions-cell button {
+    background: none;
+    border: none;
+    cursor: pointer;
+    transition: 0.3s;
+    padding: 5px;
+    border-radius: 4px;
+}
+
+.actions-cell button:hover {
+    background-color: #f8fafc;
+}
+
+.actions-cell img {
+    /* width: 18px; */
+    opacity: 0.6;
+}
+
+@media (max-width: 1024px) {
+    .manage-users-card {
+        overflow-x: auto;
+    }
+
+    .users-table {
+        min-width: 800px;
+    }
+}
+
+@media (max-width: 600px) {
+    .actions-bar {
+        flex-direction: column;
+        align-items: stretch;
+    }
+
+    .search-box input {
+        width: 100%;
+    }
+}

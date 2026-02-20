@@ -1,0 +1,225 @@
+﻿@model CarRental.ViewModels.LoginViewModel
+<div class="auth-modal">
+    <div class="auth-header">
+        <h2>Welcome Back</h2>
+        <p>Sign in to your account</p>
+    </div>
+    <form id="loginForm" asp-controller="Account" asp-action="Login" method="post">
+        @* @Html.AntiForgeryToken() *@
+        <div class="form-group">
+            <label asp-for="Email">Email</label>
+            <input asp-for="Email" class="form-control" placeholder="Enter your email">
+            <span asp-validation-for="Email" class="text-danger"></span>
+        </div>
+        <div class="form-group">
+            <label asp-for="Password">Password</label>
+            <input asp-for="Password" class="form-control" placeholder="Enter your Password">
+            <span asp-validation-for="Password" class="text-danger"></span>
+        </div>
+        <div class="form-row">
+            <div class="form-check">
+                <input asp-for="RememberMe" class="form-check-input">
+                <label asp-for="RememberMe" class="form-check-label">Remember me</label>
+            </div>
+            <a href="#" class="forgot-password">Forgot password?</a>
+        </div>
+        <div class="form-group">
+            <button type="submit" class="btn-login">Sign In</button>
+        </div>
+
+        <div class="auth-footer">
+            <p>Don't have an account? <a href="#" class="switch-to-register">Sign up</a></p>
+        </div>
+    </form>
+</div>
+<style>
+    .auth-modal {
+        background: white;
+        padding: 30px;
+        border-radius: 12px;
+        width: 350px;
+        max-width: 95%;
+    }
+
+    .auth-header {
+        text-align: center;
+        margin-bottom: 30px;
+    }
+
+        .auth-header h2 {
+            margin: 0 0 8px 0;
+            color: #333;
+            font-size: 26px;
+        }
+
+        .auth-header p {
+            color: #666;
+            margin: 0;
+        }
+
+    .form-group {
+        margin-bottom: 20px;
+    }
+
+    label {
+        display: block;
+        margin-bottom: 8px;
+        color: #333;
+        font-weight: 500;
+    }
+
+    .form-control {
+        width: 100%;
+        padding: 12px 16px;
+        border: 1px solid #ddd;
+        border-radius: 8px;
+        font-size: 16px;
+        transition: border-color 0.3s;
+    }
+
+        .form-control:focus {
+            outline: none;
+            border-color: #2563eb;
+            box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+        }
+
+    .form-row {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 20px;
+    }
+
+    .form-check {
+        display: flex;
+        align-items: center;
+    }
+
+    .form-check-input {
+        margin-right: 8px;
+    }
+
+    .form-check-label {
+        margin: 0;
+    }
+
+    .forgot-password {
+        color: #2563eb;
+        text-decoration: none;
+        font-size: 14px;
+    }
+
+        .forgot-password:hover {
+            text-decoration: underline;
+        }
+
+    .btn-login {
+        width: 100%;
+        padding: 14px;
+        background: #2563eb;
+        color: white;
+        border: none;
+        border-radius: 8px;
+        font-size: 16px;
+        font-weight: 600;
+        cursor: pointer;
+        transition: background 0.3s;
+    }
+
+        .btn-login:hover {
+            background: #1d4ed8;
+        }
+
+    .auth-footer {
+        text-align: center;
+        margin-top: 20px;
+        padding-top: 20px;
+        border-top: 1px solid #eee;
+    }
+
+        .auth-footer p {
+            color: #666;
+            margin: 0;
+        }
+
+        .auth-footer a {
+            color: #2563eb;
+            text-decoration: none;
+            font-weight: 600;
+        }
+
+            .auth-footer a:hover {
+                text-decoration: underline;
+            }
+
+    .text-danger {
+        color: #ef4444;
+        font-size: 14px;
+        margin-top: 5px;
+        display: block;
+    }
+
+    .alert {
+        padding: 12px;
+        margin-bottom: 20px;
+        border-radius: 8px;
+    }
+
+    .alert-danger {
+        background-color: #fee;
+        color: #c33;
+        border: 1px solid #fcc;
+    }
+</style>
+<script>
+    $(document).ready(function () {
+        $('#loginForm').on('submit', function (e) {
+             e.preventDefault();
+                // مسح الأخطاء القديمة
+            $('.text-danger').text('');
+                        $('.general-error').remove();
+            var form = $(this);
+            $.ajax({
+                url: form.attr('action'),
+                type: 'POST',
+                data: form.serialize(),
+                success: function (response) {
+                    if (response.success) {
+                        window.location.href = response.redirectUrl;
+                    }else if (response.fieldErrors) {
+                        // عرض كل خطأ تحت الـ field بتاعه
+                        $.each(response.fieldErrors, function(fieldName, errorMessage) {
+                            if (fieldName === 'general') {
+                                // الأخطاء العامة تظهر فوق الفورم
+                                $('#loginForm').prepend('<div class="general-error text-danger" style="margin-bottom: 15px; padding: 10px; background: #fee; border-radius: 6px;">' + errorMessage + '</div>');
+                            } else {
+                        // عرض الأخطاء
+                        // الأخطاء الخاصة بالـ fields
+                                var input = $('#loginForm').find('[name="' + fieldName + '"]');
+                                input.next('.text-danger').text(errorMessage);
+                        }
+                    });
+                    }
+                },
+                error: function () {
+                    alert('An error occurred. Please try again.');
+                }
+            });
+        });
+
+        $('.switch-to-register').on('click', function (e) {
+            e.preventDefault();
+            loadRegisterForm();
+        });
+    });
+
+    function loadRegisterForm() {
+     $.ajax({
+         url: '@Url.Action("Register", "Account")',
+         type: 'GET',
+         success: function (response) {
+             $('#modal-body').html(response); // غيّر من .modal-content لـ #modal-body
+         }
+     });
+    }
+</script>

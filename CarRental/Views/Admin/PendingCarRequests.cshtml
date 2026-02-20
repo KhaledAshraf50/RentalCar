@@ -1,0 +1,159 @@
+﻿@model IEnumerable<CarRequest>
+@{
+    ViewData["Title"] = "Pending Car Requests";
+    Layout = "_AdminDashboard";
+}
+
+<main class="dashboard-content">
+
+    <header class="content-header">
+        <h1>Pending Car Requests</h1>
+        <p>Here are all pending car requests submitted by users. You can approve them below.</p>
+    </header>
+
+    <div class="manage-cars-card">
+
+        <table class="cars-table">
+            <thead>
+                <tr>
+                    <th>User</th>
+                    <th>Car</th>
+                    <th>Price</th>
+                    <th>Year</th>
+                    <th>Action</th>
+                </tr>
+            </thead>
+            <tbody>
+                @if (!Model.Any())
+                {
+                    <tr>
+                        <td colspan="5" style="text-align:center; padding:30px; color:#64748b;">
+                            No pending requests found.
+                        </td>
+                    </tr>
+                }
+                else
+                {
+                    @foreach (var item in Model)
+                    {
+                        <tr>
+                            <td class="car-cell">
+                                <div class="car-info">
+                                    <strong>@item.User?.FullName</strong>
+                                    <span>@item.User?.Email</span>
+                                </div>
+                            </td>
+                            <td>@item.Brand @item.Model</td>
+                            <td>@item.DailyPrice EGP</td>
+                            <td>@item.Year</td>
+                            <td class="actions-cell">
+                                <form asp-action="ApproveCarRequest" method="post">
+                                    <input type="hidden" name="CarRequestId" value="@item.CarRequestId" />
+                                    <button type="submit" class="add-btn">
+                                        <i class="fa-solid fa-check check-icon"></i> Approve
+                                    </button>
+                                </form>
+                            </td>
+                        </tr>
+                    }
+                }
+            </tbody>
+        </table>
+    </div>
+
+</main>
+
+<style>
+    /* Reuse Manage Cars styles */
+
+    .dashboard-content {
+        margin: 16px;
+    }
+
+    .content-header h1 {
+        font-size: 26px;
+        color: #1e293b;
+        margin-bottom: 5px;
+    }
+
+    .content-header p {
+        font-size: 14px;
+        color: #64748b;
+        max-width: 400px;
+        font-weight: 500;
+    }
+
+    .manage-cars-card {
+        background: #fff;
+        border-radius: 12px;
+        box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+        overflow: hidden;
+        margin-top: 20px;
+        padding: 20px;
+    }
+
+    .cars-table {
+        width: 100%;
+        border-collapse: collapse;
+        text-align: left;
+    }
+
+        .cars-table th {
+            background-color: #fafafa;
+            padding: 15px 20px;
+            font-size: 13px;
+            color: #64748b;
+            font-weight: 500;
+            border-bottom: 1px solid #f1f5f9;
+        }
+
+        .cars-table td {
+            padding: 15px 20px;
+            border-bottom: 1px solid #f1f5f9;
+            color: #475569;
+            font-size: 14px;
+            vertical-align: middle;
+        }
+
+    .car-cell {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+    }
+
+    .car-info strong {
+        display: block;
+        color: #1e293b;
+    }
+
+    .car-info span {
+        font-size: 11px;
+        color: #94a3b8;
+    }
+
+    .actions-cell {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+    }
+
+    .add-btn {
+        background-color: #2563eb;
+        color: white;
+        padding: 8px 12px;
+        border-radius: 8px;
+        font-weight: 600;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        gap: 6px;
+        font-size: 13px;
+        justify-content: center;
+        transition: 0.3s;
+        border:none;
+    }
+
+        .add-btn:hover {
+            background-color: #1d4ed8;
+        }
+</style>

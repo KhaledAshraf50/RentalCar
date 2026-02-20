@@ -1,0 +1,300 @@
+﻿@model CarRental.ViewModels.DashboardViewModel
+
+@{
+    Layout = "_UserDashboard";
+    ViewData["Title"] = "My Dashboard";
+    var user = ViewBag.User as CarRental.Models.User;
+}
+
+@section styles {
+    <link rel="stylesheet" href="~/style/userDashboard.css">
+}
+
+<main class="dashboard-content">
+    <header class="content-header">
+        <h1>Welcome back @user?.FullName </h1>
+        <p>Here's an overview of your bookings and account activity</p>
+    </header>
+
+    @if (TempData["SuccessMessage"] != null)
+    {
+        <div class="alert alert-success">@TempData["SuccessMessage"]</div>
+    }
+
+    @if (TempData["ErrorMessage"] != null)
+    {
+        <div class="alert alert-danger">@TempData["ErrorMessage"]</div>
+    }
+
+    <!-- Stats Grid -->
+    <div class="stats-grid">
+        <div class="stat-card">
+            <div class="stat-info">
+                <span>Active Bookings</span>
+                <strong>@Model.ActiveBookings</strong>
+            </div>
+            <div class="stat-icon blue">
+                <img src="~/imgs/book-blue.svg">
+            </div>
+        </div>
+
+        <div class="stat-card">
+            <div class="stat-info">
+                <span>Completed Trips</span>
+                <strong>@Model.CompletedTrips</strong>
+            </div>
+            <div class="stat-icon green">
+                <img src="~/imgs/check-blue.svg">
+            </div>
+        </div>
+
+        <div class="stat-card">
+            <div class="stat-info">
+                <span>Total Spent</span>
+                <strong>$@Model.TotalSpent.ToString("F2")</strong>
+            </div>
+            <div class="stat-icon purple">
+                <img src="~/imgs/car-blue.svg">
+            </div>
+        </div>
+
+        <div class="stat-card">
+            <div class="stat-info">
+                <span>Member Since</span>
+                <strong>@user?.CreatedAt.ToString("MMM yyyy")</strong>
+            </div>
+            <div class="stat-icon orange">
+                <img src="~/imgs/calendar_icon_colored.svg">
+            </div>
+        </div>
+    </div>
+
+    <!-- Main Grid -->
+    <div class="dashboard-main-grid">
+        <!-- Recent Bookings -->
+        <section class="recent-bookings-card">
+            <div class="section-header">
+                <h2>My Recent Bookings</h2>
+                <a asp-controller="Car" asp-action="GetBookingUser" class="view-all">View All</a>
+            </div>
+            <p>Your latest rental bookings</p>
+
+            @if (!Model.UserRecentBookings.Any())
+            {
+                <div class="empty-state">
+                    <img src="~/imgs/no-bookings.svg" alt="No bookings">
+                    <h3>No bookings yet</h3>
+                    <p>Start your journey by booking your first car</p>
+                    <a asp-controller="Car" asp-action="Index" class="btn-primary">Browse Cars</a>
+                </div>
+            }
+            else
+            {
+                <div class="booking-table">
+                    @foreach (var booking in Model.UserRecentBookings)
+                    {
+                        <div class="booking-row">
+                            <div class="car-icon-box">
+                                <img src="~/imgs/book-blue.svg">
+                            </div>
+                            <div class="b-details">
+                                <h4>@booking.Car?.Brand @booking.Car?.Model</h4>
+                                <span>@booking.PickupDate.ToString("MMM dd") - @booking.ReturnDate.ToString("MMM dd, yyyy")</span>
+                            </div>
+                            <div class="b-price">$@booking.TotalPrice.ToString("F2")</div>
+                            <div class="b-status @booking.Status.ToLower()">@booking.Status</div>
+                        </div>
+                    }
+                </div>
+            }
+        </section>
+
+        <!-- Quick Actions -->
+        <section class="quick-actions-card">
+            <h2>Quick Actions</h2>
+
+            <div class="actions-list">
+                <a asp-controller="Car" asp-action="Index" class="action-item">
+                    <img src="~/imgs/car-icon.svg">
+                    <span>Browse Available Cars</span>
+                    <span class="arrow">→</span>
+                </a>
+
+                <a asp-controller="Car" asp-action="GetBookingUser" class="action-item">
+                    <img src="~/imgs/book-icon.svg">
+                    <span>View All Bookings</span>
+                    <span class="arrow">→</span>
+                </a>
+
+                <a asp-controller="User" asp-action="Profile" class="action-item">
+                    <img src="~/imgs/profile_img.svg">
+                    <span>Edit Profile</span>
+                    <span class="arrow">→</span>
+                </a>
+
+                <a asp-controller="favorite" asp-action="MyFavorite" class="action-item">
+                    <img src="~/imgs/alert.svg">
+                    <span>My Favorites</span>
+                    <span class="arrow">→</span>
+                </a>
+
+                <a href="#" onclick="showListCarModal()" class="action-item">
+                    <img src="~/imgs/add-icon.svg">
+                    <span>List Your Car</span>
+                    <span class="arrow">→</span>
+                </a>
+            </div>
+        </section>
+    </div>
+
+    <!-- Recent Activity -->
+    <section class="recent-activity-card">
+        <h2>Recent Activity</h2>
+
+        <div class="activity-timeline">
+            @{
+                var activities = new List<dynamic>();
+
+                // Add recent bookings
+                foreach (var booking in Model.UserRecentBookings.Take(3))
+                {
+                    activities.Add(new
+                    {
+                        Type = "booking",
+                        Icon = "📅",
+                        Title = $"Booked {booking.Car?.Brand} {booking.Car?.Model}",
+                        Date = booking.BookingDate,
+                        Status = booking.Status
+                    });
+                }
+
+                // Add recent favorites
+                // var favorites = await _favoriteRepository.FindAsync(f => f.UserId == user.UserId);
+                // foreach (var fav in favorites.OrderByDescending(f => f.AddedAt).Take(2))
+                // {
+                //     fav.Car = await _carService.GetCarByIdAsync(fav.CarId);
+                //     activities.Add(new
+                //     activities.Add(new
+                //     {
+                //         Type = "favorite",
+                //         Icon = "❤️",
+                //         Title = $"Added {fav.Car?.Brand} {fav.Car?.Model} to favorites",
+                //         Date = fav.AddedAt,
+                //         Status = ""
+                //     });
+                // }
+
+                // var sortedActivities = activities.OrderByDescending(a => a.Date).Take(5);
+            }
+
+            @* @foreach (var activity in sortedActivities)
+            {
+                <div class="activity-item">
+                    <div class="activity-icon">@activity.Icon</div>
+                    <div class="activity-details">
+                        <p>@activity.Title</p>
+                        <span class="activity-date">@activity.Date.ToString("MMM dd, yyyy")</span>
+                    </div>
+                    @if (!string.IsNullOrEmpty(activity.Status))
+                    {
+                        <span class="activity-status @activity.Status.ToLower()">@activity.Status</span>
+                    }
+                </div>
+            } *@
+        </div>
+    </section>
+</main>
+
+<!-- List Car Modal -->
+<div id="listCarModal" class="modal" style="display: none;">
+    <div class="modal-overlay"></div>
+    <div class="modal-content">
+        <div class="list-car-modal">
+            <h3>List Your Car</h3>
+            <p>Earn passive income by listing your car on our platform</p>
+
+            <form id="listCarForm" asp-controller="Car" asp-action="ListCar" method="post">
+                @Html.AntiForgeryToken()
+
+                <div class="form-group">
+                    <label>Brand</label>
+                    <input type="text" name="Brand" required>
+                </div>
+
+                <div class="form-group">
+                    <label>Model</label>
+                    <input type="text" name="Model" required>
+                </div>
+
+                <div class="form-group">
+                    <label>Year</label>
+                    <input type="number" name="Year" required>
+                </div>
+
+                <div class="form-group">
+                    <label>Daily Price ($)</label>
+                    <input type="number" name="DailyPrice" step="0.01" required>
+                </div>
+
+                <div class="form-actions">
+                    <button type="button" class="btn-secondary" onclick="$('#listCarModal').fadeOut()">Cancel</button>
+                    <button type="submit" class="btn-primary">Submit for Approval</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<style>
+    .alert {
+        padding: 15px;
+        margin-bottom: 20px;
+        border-radius: 8px;
+    }
+
+    .alert-success {
+        background: #d1fae5;
+        color: #065f46;
+        border: 1px solid #a7f3d0;
+    }
+
+    .alert-danger {
+        background: #fee2e2;
+        color: #991b1b;
+        border: 1px solid #fecaca;
+    }
+
+</style>
+
+@section Scripts {
+    <script>
+        function showListCarModal() {
+            event.preventDefault();
+            $('#listCarModal').fadeIn();
+        }
+
+        $('#listCarForm').on('submit', function(e) {
+            e.preventDefault();
+
+            $.ajax({
+                url: $(this).attr('action'),
+                type: 'POST',
+                data: $(this).serialize(),
+                headers: {
+                    'RequestVerificationToken': $('input[name="__RequestVerificationToken"]').val()
+                },
+                success: function(response) {
+                    if (response.success) {
+                        alert('Your car has been submitted for approval!');
+                        $('#listCarModal').fadeOut();
+                    } else {
+                        alert(response.message || 'Failed to submit car');
+                    }
+                },
+                error: function() {
+                    alert('An error occurred. Please try again.');
+                }
+            });
+        });
+    </script>
+}

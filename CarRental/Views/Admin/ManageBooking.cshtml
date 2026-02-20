@@ -1,0 +1,172 @@
+﻿@model IEnumerable<CarRental.Models.Booking>
+
+@{
+    Layout = "_AdminDashboard";
+    ViewData["Title"] = "Manage Bookings";
+}
+
+@section styles {
+    <link rel="stylesheet" href="~/style/manageBooking.css">
+    <style>
+        .filters-bar select,
+        .filters-bar input {
+            padding: 8px 12px;
+            border-radius: 8px;
+            border: 1px solid #ccc;
+            font-size: 14px;
+        }
+
+            .filters-bar select:focus,
+            .filters-bar input:focus {
+                border-color: #007bff;
+                outline: none;
+            }
+
+    </style>
+}
+
+<main class="dashboard-content">
+    <header class="content-header">
+        <h1>Manage Bookings</h1>
+        <p>Track all customer bookings, approve or cancel requests, and manage booking statuses</p>
+    </header>
+
+    <div class="manage-bookings-card">
+        <div class="filters-bar">
+            <select id="statusFilter" onchange="filterBookings()">
+                <option value="">All Status</option>
+                <option value="Pending">Pending</option>
+                <option value="Confirmed">Confirmed</option>
+                <option value="Completed">Completed</option>
+                <option value="Cancelled">Cancelled</option>
+            </select>
+
+            <div class="search-box">
+                <input type="text" id="searchBookings" placeholder="Search by car, customer, reference...">
+            </div>
+        </div>
+
+        <table class="bookings-table">
+            <thead>
+                <tr>
+                    <th>Booking Ref</th>
+                    <th>Customer</th>
+                    <th>Car</th>
+                    <th>Date Range</th>
+                    <th>Total</th>
+                    <th>Status</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var booking in Model.OrderByDescending(b => b.BookingDate))
+                {
+                    <tr>
+                        <td class="booking-ref">@booking.BookingReference</td>
+                        <td class="customer-cell">
+                            <img style="width:60px;height:60px;object-fit:cover;border-radius:8px;" 
+                                src="@(booking.User?.ProfileImage ?? "/imgs/profile_img.svg")" alt="">
+                            <span>@booking.User?.FullName</span>
+                        </td>
+                        <td class="car-cell" style="display:flex;flex-direction:column;align-items:start; gap:20px;">
+                            <img src="@(booking.Car?.ImageUrl ?? "/imgs/default-car.jpg")" alt="">
+                            <strong>@booking.Car?.Brand @booking.Car?.Model</strong>
+                        </td>
+                        <td>
+                            @booking.PickupDate.ToString("MMM dd") - @booking.ReturnDate.ToString("MMM dd, yyyy")
+                        </td>
+                        <td class="total-price">$@booking.TotalPrice.ToString("F2")</td>
+                        <td>
+                            <span class="status-pill @booking.Status.ToLower()">@booking.Status</span>
+                        </td>
+                        <td class="actions-cell">
+                            <div class="actions-wrapper">
+                                <select class="status-dropdown"
+                                        onchange="updateBookingStatus(@booking.BookingId, this.value)">
+                                    <option value="">Change Status</option>
+                                    <option value="Pending">Pending</option>
+                                    <option value="Confirmed">Confirm</option>
+                                    <option value="Completed">Complete</option>
+                                    <option value="Cancelled">Cancel</option>
+                                </select>
+
+                                <a class="btn-view"
+                                   asp-action="BookDetails"
+                                   asp-controller="Admin"
+                                   asp-route-id="@booking.BookingId">
+                                    Details
+                                </a>
+                            </div>
+                        </td>
+
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</main>
+@section Scripts {
+<script>
+function updateBookingStatus(bookingId, newStatus) {
+
+    if (!newStatus) return;
+
+    fetch('/Admin/UpdateBookingStatus', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/x-www-form-urlencoded'
+        },
+        body: `bookingId=${bookingId}&status=${newStatus}`
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            alert("Status updated successfully");
+            location.reload();
+        } else {
+            alert(data.message || "Failed to update");
+        }
+    })
+    .catch(error => {
+        console.error(error);
+        alert("Error occurred");
+    });
+}
+</script>
+    <script>
+        const statusFilter = document.getElementById("statusFilter");
+        const searchInput = document.getElementById("searchBookings");
+        statusFilter.addEventListener("change", filterBookings);
+        searchInput.addEventListener("keyup", filterBookings);
+
+        function filterBookings() {
+
+            const selectedStatus = statusFilter.value.toLowerCase();
+            const searchText = searchInput.value.toLowerCase().trim();
+
+
+            const rows = document.querySelectorAll(".bookings-table tbody tr");
+
+            rows.forEach(row => {
+
+                const bookingRef = row.querySelector(".booking-ref")?.innerText.toLowerCase() || "";
+                const customer = row.querySelector(".customer-cell span")?.innerText.toLowerCase() || "";
+                const car = row.querySelector(".car-cell strong")?.innerText.toLowerCase() || "";
+                const total = row.querySelector(".total-price")?.innerText.toLowerCase() || "";
+                const status = row.querySelector(".status-pill")?.innerText.toLowerCase() || "";
+
+                const matchesSearch =
+                    bookingRef.includes(searchText) ||
+                    customer.includes(searchText) ||
+                    car.includes(searchText) ||
+                    total.includes(searchText);
+
+                const matchesStatus =
+                    !selectedStatus || status === selectedStatus;
+
+                row.style.display = (matchesSearch && matchesStatus) ? "" : "none";
+            });
+        }
+    </script>
+
+}

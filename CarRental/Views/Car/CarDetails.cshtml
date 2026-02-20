@@ -1,0 +1,304 @@
+﻿@model CarDetailsViewModel
+@{
+    Layout = "_Layout";
+    ViewData["Title"] = "Cars Details";
+}
+@section styles{
+    <link rel="stylesheet" href="~/style/main.css">
+    <link rel="stylesheet" href="~/style/carDetails.css">
+    <style>
+        /* Alert container */
+        .custom-alert {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 14px 18px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+            font-size: 14px;
+            font-weight: 500;
+            position: relative;
+            animation: fadeIn 0.3s ease-in-out;
+            transition: opacity 0.3s ease, transform 0.3s ease;
+        }
+
+        /* Close button */
+        .alert-close {
+            margin-left: auto;
+            background: none;
+            border: none;
+            font-size: 18px;
+            cursor: pointer;
+            color: #166534;
+            opacity: 0.6;
+            transition: 0.2s;
+        }
+
+            .alert-close:hover {
+                opacity: 1;
+            }
+
+        /* Hide animation */
+        .custom-alert.hide {
+            opacity: 0;
+            transform: translateY(-5px);
+        }
+        /* ================= Success Alert ================= */
+        .custom-alert {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 14px 18px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+            font-size: 14px;
+            font-weight: 500;
+            animation: fadeIn 0.3s ease-in-out;
+        }
+
+        /* Success Style */
+        .success-alert {
+            background-color: #ecfdf5;
+            color: #166534;
+            border: 1px solid #bbf7d0;
+        }
+        /* Icon circle */
+        .alert-icon {
+            background: #22c55e;
+            color: white;
+            width: 22px;
+            height: 22px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 13px;
+        }
+
+        .add-btn {
+            text-decoration: none;
+        }
+    </style>
+}
+    <main class="car-details-page">
+        <div class="container">
+        <a asp-controller="Car" asp-action="Index" class="back-link">← Back to all cars</a>
+        @* @if (TempData["ErrorMessage"]!=null)
+        {
+            <div class="alert alert-danger">@TempData["ErrorMessage"]</div>
+        } *@
+        @if (TempData["SuccessMessage"] != null)
+        {
+            <div class="custom-alert success-alert" id="successAlert">
+                <span class="alert-icon">✓</span>
+                <span>@TempData["SuccessMessage"]</span>
+                <button class="alert-close" onclick="closeAlert()">X</button>
+            </div>
+        }
+        @if (TempData["ErrorMessage"] != null)
+        {
+            <div class="custom-alert alert-danger" id="successAlert">
+                <span class="alert-icon">x</span>
+                <span>@TempData["ErrorMessage"]</span>
+                <button class="alert-close" onclick="closeAlert()">X</button>
+            </div>
+        }
+            <div class="details-wrapper">
+                <div class="main-info">
+                    <div class="car-main-image">
+                    <img src="@(Model.Car.ImageUrl ?? "/imgs/default-car.jpg")" alt="@Model.Car.Brand @Model.Car.Model">
+                    </div>
+                    <div class="car-title-section">
+                    <h1>@Model.Car.Brand @Model.Car.Model</h1>
+                    <p>@Model.Car.Year • @Model.Car.Category?.CategoryName</p>
+                    @if (Model.Car.AverageRating.HasValue)
+                    {
+                        <div class="rating">
+                            <span class="stars">@RenderStars(Model.Car.AverageRating.Value)</span>
+                            <span class="rating-value">@Model.Car.AverageRating.Value.ToString("F1")</span>
+                            <span class="reviews-count">(@Model.Car.Reviews?.Count ?? 0 reviews)</span>
+                        </div>
+                    }
+                    </div>
+                    <div class="specs-grid">
+                        <div class="spec-item">
+                            <img src="imgs/seats.svg" alt="">
+                        <span>@Model.Car.SeatingCapacity Seats</span>
+                        </div>
+                        <div class="spec-item">
+                            <img src="imgs/fuel.svg" alt="">
+                        <span>@Model.Car.FuelType</span>
+                        </div>
+                        <div class="spec-item">
+                            <img src="imgs/gear.svg" alt="">
+                        <span>@Model.Car.Transmission</span>
+                        </div>
+                        <div class="spec-item">
+                            <img src="imgs/loc.svg" alt="">
+                            <span>@Model.Car.Location?.City</span>
+                        </div>
+                    </div>
+                    <div class="description">
+                        <h3>Description</h3>
+                    <p>
+                        @(!string.IsNullOrEmpty(Model.Car.Description) 
+                        ? Model.Car.Description : "No description available for this vehicle.")
+                    </p>
+                    </div>
+                <!-- Features -->
+                @if (Model.Car.CarFeatures != null && Model.Car.CarFeatures.Any())
+                {
+                    <div class="features">
+                        <h3>Features</h3>
+                        <div class="features-list">
+                            @foreach (var carFeature in Model.Car.CarFeatures)
+                            {
+                                <div class="feature-check">
+                                    <span>✓</span> @carFeature.Feature.FeatureName
+                                </div>
+                            }
+                        </div>
+                    </div>
+                }
+                <!-- Reviews Section -->
+                @if (Model.Car.Reviews != null && Model.Car.Reviews.Any())
+                {
+                    <div class="reviews-section" style="background-color:white;border-top:1px solid #115;padding:10px">
+                        <h3>Customer Reviews</h3>
+                        @foreach (var review in @Model.Car.Reviews.Where(r => r.IsApproved).Take(3))
+                        {
+                            <div class="review-item">
+                                <div class="review-header">
+                                    <img style="width:80px;height:80px; border-radius:50%;object-fit:contain;"
+                                        src="@(review.User?.ProfileImage ?? "/imgs/profile_img.svg")" alt="@review.User?.FullName">
+                                    <div>
+                                        <h4>@review.User?.FullName</h4>
+                                        <span class="review-date">@review.ReviewDate.ToString("MMM dd, yyyy")</span>
+                                    </div>
+                                    <div class="review-rating" style="color:blue;">
+                                        <span class="stars">@RenderStars(review.Rating)</span>
+                                    </div>
+                                </div>
+                                <p class="review-comment">@review.Comment</p>
+                            </div>
+                        }
+                    </div>
+                }
+                @if (User.Identity.IsAuthenticated)
+                {
+                    <div class="add-review mt-4">
+                        <h3>Add Review</h3>
+
+                        <form asp-action="AddReview" asp-controller="Car" method="post">
+                            @Html.AntiForgeryToken()
+
+                            <input type="hidden" asp-for="Review.CarId" value="@Model.Car.CarId" />
+
+                            <div class="form-group">
+                                <label>Rating</label>
+                                <select asp-for="Review.Rating" class="form-control" required>
+                                    <option value="">Select</option>
+                                    <option value="5">5</option>
+                                    <option value="4">4</option>
+                                    <option value="3">3</option>
+                                    <option value="2">2</option>
+                                    <option value="1">1</option>
+                                </select>
+                            </div>
+
+                            <div class="form-group">
+                                <label>Comment</label>
+                                <textarea asp-for="Review.Comment" class="form-control" required></textarea>
+                            </div>
+
+                            <button type="submit" class="btn btn-primary mt-2">
+                                Submit Review
+                            </button>
+                        </form>
+                    </div>
+                }
+
+            </div>
+            <!-- Booking Sidebar -->
+            <aside class="booking-sidebar">
+                <div class="price-header">
+                    <span class="amount">$@Model.Car.DailyPrice</span>
+                    <span class="per-day">per day</span>
+                </div>
+                <form asp-action="Book" asp-controller="Car" method="post" class="sidebar-form">
+                    @Html.AntiForgeryToken()
+
+                    <input asp-for="Booking.CarId" type="hidden" value="@Model.Car.CarId" />
+
+                    <div class="form-group">
+                        <label asp-for="Booking.PickupDate"></label>
+                        <input asp-for="Booking.PickupDate" type="date" class="form-control" />
+                        <span asp-validation-for="Booking.PickupDate" class="text-danger"></span>
+                    </div>
+
+                    <div class="form-group">
+                        <label asp-for="Booking.ReturnDate"></label>
+                        <input asp-for="Booking.ReturnDate" type="date" class="form-control" />
+                        <span asp-validation-for="Booking.ReturnDate" class="text-danger"></span>
+                    </div>
+
+                    <div class="form-group">
+                        <label asp-for="Booking.PickupLocationId"></label>
+                        <select asp-for="Booking.PickupLocationId"
+                                asp-items="@Model.Booking.Locations"
+                                class="form-control">
+                            <option value="">Select location</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label asp-for="Booking.ReturnLocationId"></label>
+                        <select asp-for="Booking.ReturnLocationId"
+                                asp-items="@Model.Booking.Locations"
+                                class="form-control">
+                            <option value="">Select location</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label asp-for="Booking.Notes"></label>
+                        <textarea asp-for="Booking.Notes" class="form-control"></textarea>
+                    </div>
+
+                    <button type="submit" class="book-now-btn">Book Now</button>
+                </form>
+
+            </aside>
+            </div>
+        </div>
+    </main>
+@functions {
+    public static string RenderStars(decimal rating)
+    {
+        var fullStars = (int)Math.Floor(rating);
+        var halfStar = rating - fullStars >= 0.5m;
+        var emptyStars = 5 - fullStars - (halfStar ? 1 : 0);
+
+        var stars = "";
+        for (int i = 0; i < fullStars; i++) stars += "★";
+        if (halfStar) stars += "½";
+        for (int i = 0; i < emptyStars; i++) stars += "☆";
+
+        return stars;
+    }
+}
+@section Scripts {
+    <script>
+        function closeAlert(){
+            const alert = document.getElementById("successAlert");
+            if(alert){
+                alert.classList.add("hide");
+                setTimeout(()=>alert.remove(),300)
+            }
+        }
+        // Auto close after 4 seconds
+        setTimeout(()=>{
+            closeAlert();
+        },4000)
+    </script>
+}

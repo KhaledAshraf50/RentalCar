@@ -1,0 +1,82 @@
+﻿@{
+    Layout = "_UserDashboard";
+}
+<style>
+    .review-container {
+        display: flex;
+        justify-content: center;
+        padding: 60px 20px;
+    }
+
+    .review-card {
+        width: 500px;
+        background: #ffffff;
+        padding: 35px;
+        border-radius: 18px;
+        box-shadow: 0 10px 30px rgba(0,0,0,0.07);
+    }
+
+        .review-card h3 {
+            margin-bottom: 25px;
+            color: #1e293b;
+            font-weight: 600;
+        }
+
+        .review-card textarea {
+            width: 100%;
+            height: 120px;
+            padding: 12px;
+            border-radius: 12px;
+            border: 1px solid #cbd5e1;
+            margin-bottom: 20px;
+            resize: none;
+            font-size: 14px;
+        }
+
+        .review-card select {
+            width: 100%;
+            padding: 10px;
+            border-radius: 12px;
+            border: 1px solid #cbd5e1;
+            margin-bottom: 25px;
+        }
+
+        .review-card button {
+            width: 100%;
+            padding: 12px;
+            border-radius: 30px;
+            background: #2563eb;
+            color: white;
+            border: none;
+            font-weight: 500;
+            transition: 0.3s;
+        }
+
+            .review-card button:hover {
+                background: #1d4ed8;
+            }
+
+</style>
+<div class="review-container">
+    <div class="review-card">
+        <h3>Share Your Experience</h3>
+
+        <form asp-action="AddTestimonial" method="post">
+
+            <textarea name="comment"
+                      placeholder="Tell us about your experience..."
+                      required></textarea>
+
+            <select name="rating" required>
+                <option value="">Select Rating</option>
+                <option style="color:blue;" value="5">⭐⭐⭐⭐⭐</option>
+                <option style="color:blue;" value="4">⭐⭐⭐⭐</option>
+                <option style="color:blue;" value="3">⭐⭐⭐</option>
+                <option style="color:blue;" value="2">⭐⭐</option>
+                <option style="color:blue;" value="1">⭐</option>
+            </select>
+
+            <button type="submit">Submit Review</button>
+        </form>
+    </div>
+</div>

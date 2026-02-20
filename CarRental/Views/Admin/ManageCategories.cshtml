@@ -1,0 +1,90 @@
+﻿@model IEnumerable<CarRental.ViewModels.CategoryWithCountVM>
+@{
+    Layout = "_AdminDashboard";
+    ViewData["Title"] = "Manage Categories";
+}
+@section styles {
+    <link rel="stylesheet" href="~/style/manageCategories.css">
+}
+    <main class="dashboard-content">
+        <header class="content-header">
+            <h1>Manage Categories</h1>
+            <p>Organize your cars into categories like Economy, Luxury, SUV, and Sports</p>
+        </header>
+    @if (TempData["SuccessMessage"] != null)
+    {
+        <div class="custom-alert success-alert" id="successAlert">
+            <span class="alert-icon">✓</span>
+            <span>@TempData["SuccessMessage"]</span>
+            <button class="alert-close" onclick="closeAlert()">X</button>
+        </div>
+    }
+        <div class="actions-bar-top">
+            <div class="search-box">
+            <input type="text" id="searchCategories" placeholder="Search categories...">
+            </div>
+        <a asp-controller="Admin" asp-action="AddCategory" class="add-btn">
+            + Add Category
+        </a>
+    </div>
+    <div class="categories-grid">
+        @foreach (var category in Model)
+        {
+            <div class="category-card">
+                <div class="category-header">
+                    <h3>@category.CategoryName</h3>
+                    <div class="actions-cell">
+                        <a asp-controller="Admin" asp-action="EditCategory" asp-route-id="@category.CategoryID"
+                            title="Edit">
+                            <img src="~/imgs/edit-eye.svg">
+                         </a>
+                        <form asp-controller="Admin"
+                              asp-action="DeleteCategory"
+                              asp-route-id="@category.CategoryID"
+                              method="post"
+                              style="display:inline;">
+
+                            <button type="submit" style="background:none;border:none;padding:0;"
+                                    onclick="return confirm('Are you sure you want to delete this category?')">
+                                <img src="~/imgs/trash.svg" title="Delete" />
+                            </button>
+                        </form>
+
+                    </div>
+                </div>
+                <p class="category-desc">@category.Description</p>
+                <div class="category-stats">
+                    <span class="stat-badge">@category.CarCount</span>
+                </div>
+            </div>
+        }         
+    </div>
+</main>
+@section Scripts {
+    <script>
+        function closeAlert(){
+            const alert = document.getElementById("successAlert");
+            if(alert){
+                alert.classList.add("hide");
+                setTimeout(()=>alert.remove(),300)
+            }
+        }
+        // Auto close after 4 seconds
+        setTimeout(()=>{
+            closeAlert();
+        },4000)
+    </script>
+    <script>
+        const SearchInput = document.getElementById("searchCategories");
+        SearchInput.addEventListener("keyup",Search)
+        function Search(){
+            const searchText = SearchInput.value.toLowerCase().trim();
+            const rows = document.querySelectorAll(".categories-grid .category-card");
+            rows.forEach(row =>{
+                const categoryheader = row.querySelector(".category-header")?.innerText.toLowerCase() || "";
+                const matchSearch = categoryheader.includes(searchText);
+                row.style.display = matchSearch ? "":"none";
+            })
+        }
+    </script>
+}

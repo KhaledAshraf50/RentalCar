@@ -1,0 +1,412 @@
+﻿@using System.Security.Claims
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"] - CarRental</title>
+    <script type="importmap"></script>
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="~/style/site.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/CarRental.styles.css" asp-append-version="true" />
+    @await RenderSectionAsync("styles", required: false)
+</head>
+<body>
+    <!-- start header  -->
+    @{
+        // var userRole = Context.Session.GetString("UserRole");
+        // var userId = Context.Session.GetInt32("UserId");
+        var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+        var userRole = User.FindFirst(ClaimTypes.Role)?.Value;
+        var userName = User.Identity?.Name;
+        var profileImage = User.FindFirst("ProfileImage")?.Value;
+    }
+    <header class="header">
+        <div class="container">
+            <div class="logo">
+                <a asp-controller="HomePage" asp-action="Index">
+                    <img src="~/imgs/logo.svg" alt="CarRental">
+                </a>
+            </div>
+            <nav>
+                <ul class="links">
+                    <li><a asp-controller="HomePage" asp-action="Index">Home</a></li>
+                    <li><a asp-controller="Car" asp-action="Index">Cars</a></li>
+                    <li>
+                        <a href="/favorite/myFavorite" class="require-login">My Favorities</a>
+                    </li>
+                        @if (userId != null)
+                        {
+                        <li class="mobile-only">
+                            @if (userRole == "Admin")
+                            {
+                                <a asp-controller="Admin" asp-action="Main">Dashboard</a>
+                            }
+                            else
+                            {
+                                <a asp-controller="User" asp-action="MainPage">Dashboard</a>
+                            }
+                        </li>
+                    }
+                    @if (userId == null)
+                        {
+                    <li class="mobile-only">
+                        <a href="/Account/Login" class="require-login">Login</a>
+                    </li>
+                        }
+
+                </ul>
+            </nav>
+            <div class="header-right">
+                <div class="search-bar">
+                    <input type="text" placeholder="Search cars">
+                    <img src="~/imgs/search_icon.svg" alt="">
+                </div>
+                @{
+                    if (userId == null)
+                    {
+                        <button class="signup-btn" id="openAuthModel">Sign Up</button>
+                    }
+                    else
+                    {
+                        <div class="user-dropdown">
+                            <button class="user-profile-btn">
+                                <img src="@profileImage" alt="Profile"
+                                     onerror="this.src='/imgs/profile_img.svg'"
+                                     class="profile-img-small">
+                                <span>@userName</span>
+                            </button>
+                            <div class="dropdown-menu">
+                                <a asp-controller="User" asp-action="Profile" class="dropdown-item">
+                                    <img src="~/imgs/profile_img.svg"> My Profile
+                                </a>
+                                @if (userRole == "Admin")
+                                {
+                                    <a asp-controller="Admin" asp-action="Main" class="dropdown-item">
+                                        <img src="~/imgs/dash-icon.svg"> Dashboard
+                                    </a>
+                                }
+                                else
+                                {
+                                    <a asp-controller="User" asp-action="MainPage" class="dropdown-item">
+                                        <img src="~/imgs/dash-icon.svg"> Dashboard
+                                    </a>
+                                }
+                                <div class="dropdown-divider"></div>
+                                <a asp-controller="Account" asp-action="Logout" class="dropdown-item logout">
+                                    <img src="~/imgs/logout-icon.svg"> Logout
+                                </a>
+                            </div>
+                        </div>
+
+                    }
+                }
+            </div>
+            <div class="menu-toggle">
+                <span></span>
+            </div>
+        </div>
+    </header>
+    <!-- end header  -->
+    <!-- Auth Modal -->
+    <!-- Auth Modal -->
+    <div id="authModal" class="modal" style="display: none;">
+        <div class="modal-content">
+            <button class="modal-close" id="closeModal">&times;</button>
+            <div id="modal-body">
+                <!-- Content loaded via AJAX -->
+            </div>
+        </div>
+    </div>
+    <style>
+        .mobile-only {
+            display: none;
+        }
+
+        @@media (max-width: 767px) {
+            .mobile-only
+
+        {
+            display: block;
+        }
+
+        }
+
+        .user-dropdown {
+            position: relative;
+            display: inline-block;
+        }
+
+        .user-profile-btn {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            background: none;
+            border: 1px solid #ddd;
+            padding: 8px 16px;
+            border-radius: 20px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+            .user-profile-btn:hover {
+                background: #f8f9fa;
+            }
+
+        .profile-img-small {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            object-fit: cover;
+        }
+
+        .dropdown-menu {
+            position: absolute;
+            top: 100%;
+            right: 0;
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+            min-width: 200px;
+            padding: 10px 0;
+            display: none;
+            z-index: 1000;
+        }
+
+        .user-dropdown:hover .dropdown-menu {
+            display: block;
+        }
+
+        .dropdown-item {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 10px 20px;
+            color: #333;
+            text-decoration: none;
+            transition: background 0.3s;
+        }
+
+            .dropdown-item:hover {
+                background: #f8f9fa;
+            }
+
+            .dropdown-item img {
+                width: 16px;
+                height: 16px;
+            }
+
+        .dropdown-divider {
+            height: 1px;
+            background: #eee;
+            margin: 5px 0;
+        }
+
+        .logout {
+            color: #ef4444;
+        }
+
+        /* Modal Styles */
+        .modal {
+            position: fixed;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.5);
+            display: none;
+            justify-content: center;
+            align-items: center;
+            z-index: 9999;
+        }
+
+        .modal-content {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background: transparent; /* إزالة الخلفية البيضاء */
+            box-shadow: none; /* إزالة الظل */
+            max-height: 90vh; /* عشان لو الفورم طويل */
+            /* overflow-y: auto; /* سكرول لو احتاج */
+            position: relative; /* مهم عشان الزرار */
+        }
+
+        .modal-close {
+            position: absolute;
+            top: -15px;
+            right: 15px;
+            width: 40px;
+            height: 40px;
+            background: white;
+            border: 2px solid #ddd;
+            border-radius: 50%;
+            font-size: 28px;
+            line-height: 1;
+            cursor: pointer;
+            color: #666;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s;
+            z-index: 10000;
+            padding: 0;
+        }
+
+            .modal-close:hover {
+                background: #ef4444;
+                color: white;
+                border-color: #ef4444;
+                transform: rotate(90deg);
+            }
+
+        #openAuthModal {
+            background: #2563eb;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: 500;
+            transition: background 0.3s;
+        }
+
+            #openAuthModal:hover {
+                background: #1d4ed8;
+            }
+    </style>
+    <script src="~/lib/jquery/dist/jquery.min.js"></script>
+    <script>
+        $(document).ready(function () {
+            // Open auth modal
+            $('#openAuthModel').on('click', function () {
+                loadLoginForm();
+        document.getElementById("authModal").style.display = "flex";
+                        });
+
+          // Close modal بالزرار X
+        $(document).on('click', '#closeModal', function () {
+            document.getElementById("authModal").style.display = "none";
+        });
+
+        // Close modal بالضغط على الخلفية السودا
+        $('#authModal').on('click', function (e) {
+            if (e.target.id === 'authModal') {
+                document.getElementById("authModal").style.display = "none";
+            }
+        });
+
+        // Close modal with ESC key
+        $(document).on('keydown', function (e) {
+            if (e.key === 'Escape') {
+                document.getElementById("authModal").style.display = "none";
+            }
+        });
+        });
+
+        function loadLoginForm() {
+        $.ajax({
+            url: '@Url.Action("Login", "Account")',
+            type: 'GET',
+            success: function (response) {
+                $('#modal-body').html(response);
+            }
+        });
+        }
+             $('.require-login').on('click', function (e) {
+            var isLoggedIn = '@userId';
+
+            if (!isLoggedIn) {
+                e.preventDefault();
+                loadLoginForm();
+                document.getElementById("authModal").style.display = "flex";
+            }
+        });
+    </script>
+        <main role="main" class="pb-3">
+            @RenderBody()
+        </main>
+
+    @* <footer class="border-top footer text-muted">
+        <div class="container">
+            &copy; 2026 - CarRental - <a asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
+        </div>
+    </footer> *@
+    <!-- start footer  -->
+    <footer class="main-footer">
+        <div class="container footer-grid">
+            <div class="footer-about">
+                <img src="~/imgs/logo.svg" alt="CarRental" class="footer-logo">
+                <p>
+                    Premium car rental service with a wide selection of luxury and everyday vehicles for all your driving
+                    needs.
+                </p>
+                <div class="social-icons">
+                    <a href="#"><img src="~/imgs/fb.svg" alt="Facebook"></a>
+                    <a href="#"><img src="~/imgs/insta.svg" alt="Instagram"></a>
+                    <a href="#"><img src="~/imgs/twitter.svg" alt="Twitter"></a>
+                    <a href="#"><img src="~/imgs/mail.svg" alt="Mail"></a>
+                </div>
+            </div>
+            <div class="footer-links">
+                <h4>QUICK LINKS</h4>
+                <ul>
+                    <li><a href="#">Home</a></li>
+                    <li><a href="#">Browse Cars</a></li>
+                    <li><a href="#">List Your Car</a></li>
+                    <li><a href="#">About Us</a></li>
+                </ul>
+            </div>
+            <div class="footer-links">
+                <h4>RESOURCES</h4>
+                <ul>
+                    <li><a href="#">Help Center</a></li>
+                    <li><a href="#">Terms of Service</a></li>
+                    <li><a href="#">Privacy Policy</a></li>
+                    <li><a href="#">Insurance</a></li>
+                </ul>
+            </div>
+            <div class="footer-contact">
+                <h4>CONTACT</h4>
+                <p>1234 Luxury Drive<br>San Francisco, CA 94107</p>
+                <p>+1 234 567890</p>
+                <p>info@example.com</p>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <div class="container">
+                <p>© 2026 Brand. All rights reserved.</p>
+                <div class="bottom-links">
+                    <a href="#">Privacy</a>
+                    <span>|</span>
+                    <a href="#">Terms</a>
+                    <span>|</span>
+                    <a href="#">Cookies</a>
+                </div>
+            </div>
+        </div>
+    </footer>
+    <!-- end footer  -->
+    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="~/js/site.js" asp-append-version="true"></script>
+    @await RenderSectionAsync("Scripts", required: false)
+    <script>
+                $(document).on('click', '.require-login-fav', function (e) {
+
+            e.preventDefault();
+            e.stopPropagation(); // عشان ميخش على CarDetails
+
+            var isLoggedIn = '@userId';
+            var button = $(this);
+            var form = button.closest('form');
+
+            if (!isLoggedIn || isLoggedIn === '') {
+
+                loadLoginForm();
+                document.getElementById("authModal").style.display = "flex";
+
+            } else {
+
+                form.submit(); // المستخدم عامل Login → نفذ Toggle
+
+            }
+        });
+    </script>
+</body>
+</html>

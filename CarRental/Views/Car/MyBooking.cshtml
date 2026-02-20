@@ -1,0 +1,313 @@
+﻿@model IEnumerable<CarRental.Models.Booking>
+
+@{
+    Layout = "_UserDashboard";
+    ViewData["Title"] = "My Bookings";
+}
+
+@section styles {
+    <link rel="stylesheet" href="~/style/main.css">
+    <link rel="stylesheet" href="~/style/mybooking.css">
+    <style>
+        /* Alert container */
+        .custom-alert {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 14px 18px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+            font-size: 14px;
+            font-weight: 500;
+            position: relative;
+            animation: fadeIn 0.3s ease-in-out;
+            transition: opacity 0.3s ease, transform 0.3s ease;
+        }
+
+        /* Close button */
+        .alert-close {
+            margin-left: auto;
+            background: none;
+            border: none;
+            font-size: 18px;
+            cursor: pointer;
+            color: #166534;
+            opacity: 0.6;
+            transition: 0.2s;
+        }
+
+            .alert-close:hover {
+                opacity: 1;
+            }
+
+        /* Hide animation */
+        .custom-alert.hide {
+            opacity: 0;
+            transform: translateY(-5px);
+        }
+        /* ================= Success Alert ================= */
+        .custom-alert {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 14px 18px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+            font-size: 14px;
+            font-weight: 500;
+            animation: fadeIn 0.3s ease-in-out;
+        }
+
+        /* Success Style */
+        .success-alert {
+            background-color: #ecfdf5;
+            color: #166534;
+            border: 1px solid #bbf7d0;
+        }
+        /* Icon circle */
+        .alert-icon {
+            background: #22c55e;
+            color: white;
+            width: 22px;
+            height: 22px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 13px;
+        }
+
+        .add-btn {
+            text-decoration: none;
+        }
+    </style>
+}
+
+<div class="dashboard-content">
+    <section class="Mybooking_Hero">
+        <h1>My Bookings</h1>
+        <p>View and manage your car rentals</p>
+    </section>
+
+    @if (TempData["SuccessMessage"] != null)
+    {
+        <div class="custom-alert success-alert" id="successAlert">
+            <span class="alert-icon">✓</span>
+            <span>@TempData["SuccessMessage"]</span>
+            <button class="alert-close" onclick="closeAlert()">X</button>
+        </div>
+    }
+    @if (TempData["ErrorMessage"] != null)
+    {
+        <div class="custom-alert alert-danger" id="successAlert">
+            <span class="alert-icon">x</span>
+            <span>@TempData["ErrorMessage"]</span>
+            <button class="alert-close" onclick="closeAlert()">X</button>
+        </div>
+    }
+    <section class="booking-list">
+        <div class="container">
+            @if (!Model.Any())
+            {
+                <div class="empty-state">
+                    <svg width="120" height="120" viewBox="0 0 24 24" fill="none" stroke="#cbd5e1" stroke-width="1">
+                        <rect x="2" y="4" width="20" height="16" rx="2" />
+                        <path d="M8 2v4M16 2v4M3 10h18" />
+                    </svg>
+                    <h3>No bookings yet</h3>
+                    <p>Start your journey by booking your first car</p>
+                    <a asp-controller="Car" asp-action="Index" class="browse-cars-btn">Browse Cars</a>
+                </div>
+            }
+            else
+            {
+                @foreach (var booking in Model)
+                {
+                    <div class="booking-card @booking.Status.ToLower()">
+                        <div class="car-info-wrapper">
+                            <div class="car-img">
+                                <img src="@(booking.Car?.ImageUrl ?? "/imgs/default-car.jpg")" alt="@booking.Car?.Brand @booking.Car?.Model">
+                            </div>
+                            <div class="car-details">
+                                <h3>@booking.Car?.Brand @booking.Car?.Model</h3>
+                                <p class="car-meta">@booking.Car?.Year • @booking.Car?.Category?.CategoryName • @booking.Car?.Location?.City</p>
+                            </div>
+                        </div>
+
+                        <div class="booking-details">
+                            <div class="status-badge">
+                                <span class="booking-id">@booking.BookingReference</span>
+                                <span class="status @booking.Status.ToLower()">@booking.Status</span>
+                            </div>
+
+                            <div class="info-row">
+                                <img src="~/imgs/calendar_icon_colored.svg" alt="">
+                                <div>
+                                    <label>Rental Period</label>
+                                    <span>@booking.PickupDate.ToString("MMM dd, yyyy") - @booking.ReturnDate.ToString("MMM dd, yyyy")</span>
+                                </div>
+                            </div>
+
+                            <div class="info-row">
+                                <img src="~/imgs/Frame.svg" alt="">
+                                <div>
+                                    <label>Pick-up Location</label>
+                                    <span>@booking.PickupLocation?.LocationName</span>
+                                </div>
+                            </div>
+
+                            <div class="info-row">
+                                <img src="~/imgs/Frame.svg" alt="">
+                                <div>
+                                    <label>Return Location</label>
+                                    <span>@booking.ReturnLocation?.LocationName</span>
+                                </div>
+                            </div>
+
+                            @if (!string.IsNullOrEmpty(booking.CancellationReason))
+                            {
+                                <div class="info-row cancellation-reason">
+                                    <div>
+                                        <label>Cancellation Reason</label>
+                                        <span>@booking.CancellationReason</span>
+                                    </div>
+                                </div>
+                            }
+                        </div>
+
+                        <div class="price-section">
+                            <label>Total Price</label>
+                            <span class="price">$@booking.TotalPrice.ToString("F2")</span>
+                            <p class="book-date">Booked on @booking.BookingDate.ToString("MMM dd, yyyy")</p>
+
+                            @if (booking.Status == "Pending" || booking.Status == "Confirmed")
+                            {
+                                <form asp-controller="Car"
+                                      asp-action="CancelBooking"
+                                      asp-route-id="@booking.BookingId"
+                                      method="post">
+                                    @Html.AntiForgeryToken()
+                                    <button type="submit" class="cancel-booking-btn">
+                                        Cancel Booking
+                                    </button>
+                                </form>
+
+                              
+                            }
+
+                            @if (booking.Status == "Completed" && booking.Review == null)
+                            {
+                                <a asp-controller="Review" asp-action="Create" asp-route-bookingId="@booking.BookingId"
+                                   class="write-review-btn">
+                                    Write Review
+                                </a>
+                            }
+                        </div>
+                    </div>
+                }
+            }
+        </div>
+    </section>
+</div>
+<style>
+    .alert {
+        padding: 15px;
+        margin-bottom: 20px;
+        border-radius: 8px;
+    }
+
+    .alert-success {
+        background: #d1fae5;
+        color: #065f46;
+        border: 1px solid #a7f3d0;
+    }
+
+    .alert-danger {
+        background: #fee2e2;
+        color: #991b1b;
+        border: 1px solid #fecaca;
+    }
+
+    .cancel-booking-btn {
+        background: none;
+        border: 1px solid #ef4444;
+        color: #ef4444;
+        padding: 8px 16px;
+        border-radius: 6px;
+        margin-top: 10px;
+        cursor: pointer;
+        transition: all 0.3s;
+    }
+
+        .cancel-booking-btn:hover {
+            background: #ef4444;
+            color: white;
+        }
+
+    .write-review-btn {
+        display: inline-block;
+        background: #2563eb;
+        color: white;
+        text-decoration: none;
+        padding: 8px 16px;
+        border-radius: 6px;
+        margin-top: 10px;
+    }
+
+        .write-review-btn:hover {
+            background: #1d4ed8;
+        }
+
+    .cancel-modal {
+        background: white;
+        padding: 30px;
+        border-radius: 12px;
+        width: 400px;
+        max-width: 90vw;
+    }
+
+        .cancel-modal h3 {
+            margin: 0 0 10px 0;
+            color: #333;
+        }
+
+    .modal-actions {
+        display: flex;
+        justify-content: flex-end;
+        gap: 10px;
+        margin-top: 20px;
+    }
+
+    .btn-secondary {
+        padding: 10px 20px;
+        background: #e5e7eb;
+        border: none;
+        border-radius: 6px;
+        cursor: pointer;
+    }
+
+    .btn-danger {
+        padding: 10px 20px;
+        background: #ef4444;
+        color: white;
+        border: none;
+        border-radius: 6px;
+        cursor: pointer;
+    }
+</style>
+
+@section Scripts {
+    <script>
+        function closeAlert(){
+            const alert = document.getElementById("successAlert");
+            if(alert){
+                alert.classList.add("hide");
+                setTimeout(()=>alert.remove(),300)
+            }
+        }
+        // Auto close after 4 seconds
+        setTimeout(()=>{
+            closeAlert();
+        },4000)
+    </script>
+}

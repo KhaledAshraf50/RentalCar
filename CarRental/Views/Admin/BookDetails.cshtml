@@ -1,0 +1,111 @@
+﻿@model CarRental.Models.Booking
+
+@{
+    Layout = "_AdminDashboard";
+    ViewData["Title"] = "Booking Details";
+}
+
+@section styles {
+    <link rel="stylesheet" href="~/style/bookingDetails.css">
+}
+
+<main class="dashboard-content">
+
+    <header class="content-header">
+        <h1>Booking Details</h1>
+        <p>Full information about this booking</p>
+    </header>
+
+    <div class="details-card">
+
+        <!-- Booking Info -->
+        <div class="details-section">
+            <h3>Booking Information</h3>
+            <div class="details-grid">
+                <div>
+                    <span class="label">Reference</span>
+                    <strong>@Model.BookingReference</strong>
+                </div>
+
+                <div>
+                    <span class="label">Booking Date</span>
+                    <strong>@Model.BookingDate.ToString("MMM dd, yyyy")</strong>
+                </div>
+
+                <div>
+                    <span class="label">Status</span>
+                    <span class="status-pill @Model.Status.ToLower()">
+                        @Model.Status
+                    </span>
+                </div>
+
+                <div>
+                    <span class="label">Total Price</span>
+                    <strong>$@Model.TotalPrice.ToString("F2")</strong>
+                </div>
+            </div>
+        </div>
+
+        <!-- Customer Info -->
+        <div class="details-section">
+            <h3>Customer</h3>
+            <div class="customer-box">
+                <img src="@(Model.User?.ProfileImage ?? "/imgs/profile_img.svg")" />
+                <div>
+                    <strong>@Model.User?.FullName</strong>
+                    <p>@Model.User?.Email</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Car Info -->
+        <div class="details-section">
+            <h3>Car Details</h3>
+            <div class="car-box">
+                <img src="@(Model.Car?.ImageUrl ?? "/imgs/default-car.jpg")" />
+                <div>
+                    <strong>@Model.Car?.Brand @Model.Car?.Model</strong>
+                    <p>Category: @Model.Car?.Category?.CategoryName</p>
+                    <p>Location: @Model.Car?.Location?.LocationName</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Dates & Locations -->
+        <div class="details-section">
+            <h3>Rental Period</h3>
+            <div class="details-grid">
+                <div>
+                    <span class="label">Pickup</span>
+                    <strong>
+                        @Model.PickupDate.ToString("MMM dd, yyyy") <br />
+                        @Model.PickupLocation?.LocationName
+                    </strong>
+                </div>
+
+                <div>
+                    <span class="label">Return</span>
+                    <strong>
+                        @Model.ReturnDate.ToString("MMM dd, yyyy") <br />
+                        @Model.ReturnLocation?.LocationName
+                    </strong>
+                </div>
+            </div>
+        </div>
+
+        <!-- Review -->
+        @if (Model.Review != null)
+        {
+            <div class="details-section">
+                <h3>Customer Review</h3>
+                <div class="review-box">
+                    <strong>Rating: ⭐ @Model.Review.Rating / 5</strong>
+                    <p>@Model.Review.Comment</p>
+                </div>
+            </div>
+        }
+        <div class="back-btn">
+            <a asp-action="ManageBooking" asp-controller="Admin">← Back to Bookings</a>
+        </div>
+    </div>
+</main>

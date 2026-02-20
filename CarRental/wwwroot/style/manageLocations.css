@@ -1,0 +1,140 @@
+.dashboard-content {
+    margin: 16px;
+}
+.manage-locations-card {
+    background: #fff;
+    border-radius: 12px;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+    overflow: hidden;
+    margin-top: 25px;
+}
+
+.content-header h1 {
+    font-size: 26px;
+    padding: 10px;
+}
+
+.content-header p {
+    font-size: 14px;
+    max-width: 400px;
+    line-height: 1.4;
+    font-weight: 600;
+    padding: 10px;
+}
+
+.actions-bar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 20px;
+    border-bottom: 1px solid #f1f5f9;
+}
+
+.search-box {
+    flex: 1;
+    max-width: 350px;
+}
+
+.search-box input {
+    width: 100%;
+    padding: 10px 15px;
+    border: 1px solid #e2e8f0;
+    border-radius: 8px;
+    font-size: 14px;
+    outline: none;
+}
+
+.search-box input:focus {
+    border-color: #2563eb;
+}
+
+.add-btn {
+    background-color: #2563eb;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 8px;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: 0.3s;
+}
+
+.add-btn:hover {
+    background-color: #1d4ed8;
+}
+
+.locations-table {
+    width: 100%;
+    border-collapse: collapse;
+    text-align: left;
+}
+
+.locations-table th {
+    background-color: #fafafa;
+    padding: 15px 20px;
+    font-size: 13px;
+    color: #64748b;
+    font-weight: 500;
+    border-bottom: 1px solid #f1f5f9;
+}
+
+.locations-table td {
+    padding: 15px 20px;
+    border-bottom: 1px solid #f1f5f9;
+    color: #475569;
+    font-size: 14px;
+}
+
+.status-pill {
+    padding: 5px 12px;
+    border-radius: 20px;
+    font-size: 12px;
+    font-weight: 500;
+}
+
+.status-pill.active {
+    background-color: #f0fdf4;
+    color: #22c55e;
+}
+
+.status-pill.inactive {
+    background-color: #f3f4f6;
+    color: #6b7280;
+}
+
+.actions-cell {
+    display: flex;
+    gap: 15px;
+}
+
+.actions-cell button {
+    background: none;
+    border: none;
+    cursor: pointer;
+    opacity: 0.6;
+    transition: 0.3s;
+}
+
+.actions-cell button:hover {
+    opacity: 1;
+}
+
+@media (max-width: 768px) {
+    .manage-locations-card {
+        overflow-x: auto;
+    }
+
+    .locations-table {
+        min-width: 700px;
+    }
+
+    .actions-bar {
+        flex-direction: column;
+        gap: 15px;
+    }
+
+    .search-box {
+        max-width: 100%;
+    }
+}
